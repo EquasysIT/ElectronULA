@@ -467,22 +467,6 @@ Wire Wire Line
 Wire Wire Line
 	9950 7800 9950 7900
 Connection ~ 9950 7900
-Connection ~ 9550 7200
-Wire Wire Line
-	9425 7200 9550 7200
-Text Label 9550 7500 3    50   ~ 0
-GND
-$Comp
-L Device:C C24
-U 1 1 5E810049
-P 9550 7350
-F 0 "C24" H 9275 7400 50  0000 L CNN
-F 1 "2.7nf" H 9225 7325 50  0000 L CNN
-F 2 "Capacitor_SMD:C_0805_2012Metric_Pad1.15x1.40mm_HandSolder" H 9588 7200 50  0001 C CNN
-F 3 "~" H 9550 7350 50  0001 C CNN
-	1    9550 7350
-	1    0    0    -1  
-$EndComp
 $Comp
 L Device:R R6
 U 1 1 5E80FBE6
@@ -494,8 +478,6 @@ F 3 "~" H 9550 7050 50  0001 C CNN
 	1    9550 7050
 	1    0    0    -1  
 $EndComp
-Text Label 9425 7200 2    50   ~ 0
-PHIOUT
 Text Label 9950 7000 2    50   ~ 0
 ROM
 Wire Wire Line
@@ -796,7 +778,6 @@ NoConn ~ 14825 5050
 NoConn ~ 14825 5150
 NoConn ~ 14825 5250
 NoConn ~ 14825 5350
-NoConn ~ 11350 3800
 NoConn ~ 14925 7075
 $Comp
 L Personal_Library:10M08SCE144C8G U1
@@ -976,7 +957,7 @@ $EndComp
 Text Label 6025 8625 0    50   ~ 0
 3V3
 Text Label 6225 9125 0    50   ~ 0
-nRST
+nRSTIN
 Text Label 5175 9125 2    50   ~ 0
 RESET
 $Comp
@@ -1088,7 +1069,7 @@ Text Label 5175 21775 0    50   ~ 0
 LVROM
 Text Label 5175 21675 0    50   ~ 0
 LVCAPS
-Text Label 10125 13850 0    50   ~ 0
+Text Label 10125 13350 0    50   ~ 0
 LVCASIN
 Wire Wire Line
 	7275 8775 7625 8775
@@ -1556,8 +1537,8 @@ $Comp
 L Device:R R7
 U 1 1 5EE0BF55
 P 5275 15800
-F 0 "R7" V 5075 15975 50  0000 L CNN
-F 1 "10K" V 5150 15950 50  0000 L CNN
+F 0 "R7" V 5300 15975 50  0000 L CNN
+F 1 "10K" V 5375 15950 50  0000 L CNN
 F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" V 5205 15800 50  0001 C CNN
 F 3 "~" H 5275 15800 50  0001 C CNN
 	1    5275 15800
@@ -1656,24 +1637,24 @@ LVPD0
 Text Label 10250 18000 0    50   ~ 0
 LVPD2
 Text Label 10250 18800 0    50   ~ 0
-LVPD3
+LVPD1
 Text Label 10250 18700 0    50   ~ 0
 LVCAS_OUT
-Text Label 10250 18600 0    50   ~ 0
-LVRED
-Text Label 10250 18500 0    50   ~ 0
-LVGREEN
-Text Label 10250 18400 0    50   ~ 0
-LVnHS
-Text Label 10250 18300 0    50   ~ 0
-LVBLUE
-Text Label 10150 16300 0    50   ~ 0
-LVCSYNC
 Text Label 10150 16500 0    50   ~ 0
-LVCASMO
+LVRED
 Text Label 10150 16200 0    50   ~ 0
-G1_OE
+LVGREEN
+Text Label 10125 13750 0    50   ~ 0
+LVnHS
 Text Label 10150 16400 0    50   ~ 0
+LVBLUE
+Text Label 10125 13950 0    50   ~ 0
+LVCSYNC
+Text Label 10125 13450 0    50   ~ 0
+LVCASMO
+Text Label 10125 13550 0    50   ~ 0
+G1_OE
+Text Label 10125 13850 0    50   ~ 0
 LVSND
 Text Label 10150 16100 0    50   ~ 0
 LVKBD0
@@ -1687,12 +1668,12 @@ Text Label 10150 15700 0    50   ~ 0
 LVnNMI
 Text Label 10150 15900 0    50   ~ 0
 LVRnWIN
-Text Label 10150 15600 0    50   ~ 0
+Text Label 10250 18500 0    50   ~ 0
 LVCLK_IN
 Text Label 10150 15800 0    50   ~ 0
 G4_OE
 Text Label 5175 21275 0    50   ~ 0
-nRST
+nRSTIN
 Wire Wire Line
 	6025 8700 6025 8625
 Wire Wire Line
@@ -1712,19 +1693,19 @@ Text Label 5175 21075 0    50   ~ 0
 LVA1
 Text Label 5175 21175 0    50   ~ 0
 LVA0
-Text Label 5175 20875 0    50   ~ 0
+Text Label 5175 20175 0    50   ~ 0
 LVA14
-Text Label 5175 20975 0    50   ~ 0
+Text Label 5175 20875 0    50   ~ 0
 LVA2
-Text Label 5175 20675 0    50   ~ 0
+Text Label 5175 20975 0    50   ~ 0
 LVA12
-Text Label 5175 20775 0    50   ~ 0
+Text Label 5175 20675 0    50   ~ 0
 LVA13
-Text Label 5175 20575 0    50   ~ 0
-A_DIR
 Text Label 5175 20475 0    50   ~ 0
+A_DIR
+Text Label 5175 20775 0    50   ~ 0
 A_OE
-Text Label 5125 18975 0    50   ~ 0
+Text Label 5125 18275 0    50   ~ 0
 LVA7
 Text Label 5125 18675 0    50   ~ 0
 LVA6
@@ -1740,8 +1721,8 @@ Text Label 5125 16500 0    50   ~ 0
 LVA10
 Text Label 5125 16200 0    50   ~ 0
 LVA9
-Text Label 5125 16300 0    50   ~ 0
-LVnIRQ
+Text Label 5175 20275 0    50   ~ 0
+LVnIRQOUT
 $Comp
 L Connector_Generic:Conn_02x05_Odd_Even JTAG1
 U 1 1 5ECE7A8E
@@ -1776,16 +1757,12 @@ Text Label 5125 16100 0    50   ~ 0
 TDI
 Text Label 5125 16000 0    50   ~ 0
 TDO
-Text Label 3775 9875 3    50   ~ 0
-5V
-Text Label 3675 9875 3    50   ~ 0
+Text Label 9075 10950 3    50   ~ 0
+5VP
+Text Label 8975 10950 3    50   ~ 0
 GND
 Connection ~ 11325 1600
 Connection ~ 11325 1975
-Wire Wire Line
-	11325 1600 15325 1600
-Wire Wire Line
-	11325 1975 15325 1975
 $Comp
 L Device:R R12
 U 1 1 5ED2534D
@@ -1874,53 +1851,14 @@ Text Label 9275 6700 2    50   ~ 0
 $Comp
 L Connector_Generic:Conn_01x02 J1
 U 1 1 5EE70DC9
-P 3675 9675
-F 0 "J1" V 3639 9487 50  0000 R CNN
-F 1 "Conn_01x02" V 3548 9487 50  0000 R CNN
-F 2 "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical" H 3675 9675 50  0001 C CNN
-F 3 "~" H 3675 9675 50  0001 C CNN
-	1    3675 9675
+P 8975 10750
+F 0 "J1" V 8939 10562 50  0000 R CNN
+F 1 "Conn_01x02" V 8848 10562 50  0000 R CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical" H 8975 10750 50  0001 C CNN
+F 3 "~" H 8975 10750 50  0001 C CNN
+	1    8975 10750
 	0    -1   -1   0   
 $EndComp
-$Comp
-L Device:R R17
-U 1 1 5EEF9CA4
-P 6025 9675
-F 0 "R17" V 5850 9625 50  0000 L CNN
-F 1 "10K" V 5925 9600 50  0000 L CNN
-F 2 "Resistor_SMD:R_0805_2012Metric_Pad1.15x1.40mm_HandSolder" V 5955 9675 50  0001 C CNN
-F 3 "~" H 6025 9675 50  0001 C CNN
-	1    6025 9675
-	-1   0    0    1   
-$EndComp
-Text Label 6025 9450 0    50   ~ 0
-3V3
-Text Label 6225 9950 0    50   ~ 0
-LVnIRQ
-Text Label 5175 9950 2    50   ~ 0
-nIRQ
-$Comp
-L Device:D_Schottky_Small D2
-U 1 1 5EEF9CAD
-P 5600 9950
-F 0 "D2" H 5600 10155 50  0000 C CNN
-F 1 "D_Schottky_Small" H 5625 10050 50  0000 C CNN
-F 2 "Diode_SMD:D_SOD-323_HandSoldering" V 5600 9950 50  0001 C CNN
-F 3 "~" V 5600 9950 50  0001 C CNN
-	1    5600 9950
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	5175 9950 5500 9950
-Wire Wire Line
-	6025 9525 6025 9450
-Wire Wire Line
-	6025 9825 6025 9950
-Connection ~ 6025 9950
-Wire Wire Line
-	6025 9950 6225 9950
-Wire Wire Line
-	5700 9950 6025 9950
 Wire Wire Line
 	11350 6500 11350 6600
 Connection ~ 11350 6600
@@ -1937,5 +1875,299 @@ Wire Wire Line
 Text Label 11500 6700 0    50   ~ 0
 GND
 Text Label 9950 4500 2    50   ~ 0
+nIRQ
+Text Label 3175 11675 2    50   ~ 0
 GND
+Text Label 3175 10575 2    50   ~ 0
+5V
+Text Label 4575 10575 0    50   ~ 0
+RESET
+Text Label 3175 11175 2    50   ~ 0
+LVRSTOUT
+Text Label 4575 10675 0    50   ~ 0
+nIRQ
+Text Label 3175 11275 2    50   ~ 0
+LVnIRQOUT
+Text Label 5175 20575 0    50   ~ 0
+LVRSTOUT
+Text Label 3175 10775 2    50   ~ 0
+GND
+Text Label 3175 10875 2    50   ~ 0
+GND
+Wire Wire Line
+	11325 1600 15325 1600
+Wire Wire Line
+	11325 1975 15325 1975
+$Comp
+L Device:R R17
+U 1 1 5F00286C
+P 2625 11175
+F 0 "R17" V 2450 11100 50  0000 L CNN
+F 1 "10K" V 2525 11100 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" V 2555 11175 50  0001 C CNN
+F 3 "~" H 2625 11175 50  0001 C CNN
+	1    2625 11175
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	2475 11175 2350 11175
+Text Label 2350 11175 2    50   ~ 0
+3V3
+$Comp
+L Device:R R18
+U 1 1 5F00E86F
+P 2000 11275
+F 0 "R18" V 2175 11200 50  0000 L CNN
+F 1 "10K" V 2100 11200 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" V 1930 11275 50  0001 C CNN
+F 3 "~" H 2000 11275 50  0001 C CNN
+	1    2000 11275
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	1850 11275 1725 11275
+Text Label 1725 11275 2    50   ~ 0
+3V3
+$Comp
+L Device:R R19
+U 1 1 5F09D0E7
+P 5100 10675
+F 0 "R19" V 5250 10600 50  0000 L CNN
+F 1 "10K" V 5175 10600 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" V 5030 10675 50  0001 C CNN
+F 3 "~" H 5100 10675 50  0001 C CNN
+	1    5100 10675
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	5250 10675 5375 10675
+Text Label 5375 10675 0    50   ~ 0
+3V3
+$Comp
+L Switch:SW_DIP_x04 SW1
+U 1 1 5ED90B32
+P 7750 11250
+F 0 "SW1" H 7750 11717 50  0000 C CNN
+F 1 "SW_DIP_x04" H 7750 11626 50  0000 C CNN
+F 2 "Button_Switch_SMD:SW_DIP_SPSTx04_Slide_Copal_CHS-04B_W7.62mm_P1.27mm" H 7750 11250 50  0001 C CNN
+F 3 "~" H 7750 11250 50  0001 C CNN
+	1    7750 11250
+	1    0    0    -1  
+$EndComp
+Text Label 6125 11350 2    50   ~ 0
+SWC4
+Text Label 6475 11250 2    50   ~ 0
+SWC3
+Text Label 6800 11150 2    50   ~ 0
+SWC2
+Text Label 7125 11050 2    50   ~ 0
+SWC1
+Text Label 10300 21275 0    50   ~ 0
+SWC4
+Text Label 10300 20975 0    50   ~ 0
+SWC3
+Text Label 10300 21575 0    50   ~ 0
+SWC2
+Text Label 10300 21675 0    50   ~ 0
+SWC1
+Text Label 8050 11150 0    50   ~ 0
+GND
+$Comp
+L Device:R R21
+U 1 1 5EDA2BB1
+P 6225 10900
+F 0 "R21" V 6125 10825 50  0000 L CNN
+F 1 "10K" V 6300 10825 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" V 6155 10900 50  0001 C CNN
+F 3 "~" H 6225 10900 50  0001 C CNN
+	1    6225 10900
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	6225 10750 6225 10625
+$Comp
+L Device:R R22
+U 1 1 5EDB0287
+P 6550 10900
+F 0 "R22" V 6450 10825 50  0000 L CNN
+F 1 "10K" V 6625 10825 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" V 6480 10900 50  0001 C CNN
+F 3 "~" H 6550 10900 50  0001 C CNN
+	1    6550 10900
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	6550 10750 6550 10625
+Text Label 6550 10625 1    50   ~ 0
+3V3
+$Comp
+L Device:R R23
+U 1 1 5EDBF185
+P 6875 10900
+F 0 "R23" V 6775 10825 50  0000 L CNN
+F 1 "10K" V 6950 10825 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" V 6805 10900 50  0001 C CNN
+F 3 "~" H 6875 10900 50  0001 C CNN
+	1    6875 10900
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	6875 10750 6875 10625
+$Comp
+L Device:R R24
+U 1 1 5EDCCA3D
+P 7200 10900
+F 0 "R24" V 7100 10825 50  0000 L CNN
+F 1 "10K" V 7275 10825 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" V 7130 10900 50  0001 C CNN
+F 3 "~" H 7200 10900 50  0001 C CNN
+	1    7200 10900
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	7200 10750 7200 10625
+Wire Wire Line
+	7450 11050 7200 11050
+Wire Wire Line
+	8050 11050 8050 11150
+Connection ~ 8050 11150
+Wire Wire Line
+	8050 11150 8050 11250
+Connection ~ 8050 11250
+Wire Wire Line
+	8050 11250 8050 11350
+Wire Wire Line
+	6875 11050 6875 11150
+Wire Wire Line
+	6875 11150 7450 11150
+Wire Wire Line
+	6550 11050 6550 11250
+Wire Wire Line
+	6550 11250 7450 11250
+Wire Wire Line
+	6225 11050 6225 11350
+Wire Wire Line
+	6225 11350 7450 11350
+Wire Wire Line
+	7200 11050 7125 11050
+Connection ~ 7200 11050
+Wire Wire Line
+	6875 11150 6800 11150
+Connection ~ 6875 11150
+Wire Wire Line
+	6550 11250 6475 11250
+Connection ~ 6550 11250
+Wire Wire Line
+	6225 11350 6125 11350
+Connection ~ 6225 11350
+Wire Wire Line
+	6225 10625 6550 10625
+Wire Wire Line
+	6550 10625 6875 10625
+Connection ~ 6550 10625
+Wire Wire Line
+	6875 10625 7200 10625
+Connection ~ 6875 10625
+Text Label 5125 15700 0    50   ~ 0
+JTAGEN
+$Comp
+L Device:R R20
+U 1 1 5F1E4556
+P 5800 15700
+F 0 "R20" V 5875 15850 50  0000 L CNN
+F 1 "10K" V 5950 15850 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" V 5730 15700 50  0001 C CNN
+F 3 "~" H 5800 15700 50  0001 C CNN
+	1    5800 15700
+	0    1    1    0   
+$EndComp
+Text Label 5950 15700 0    50   ~ 0
+3V3
+Wire Wire Line
+	5125 15700 5650 15700
+$Comp
+L Personal_Library:SN74HCT125D U10
+U 1 1 5EDF3BA4
+P 3875 10975
+F 0 "U10" H 3875 11745 50  0000 C CNN
+F 1 "SN74HCT125D" H 3875 11654 50  0000 C CNN
+F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 3875 10975 50  0001 L BNN
+F 3 "9591800" H 3875 10975 50  0001 L BNN
+F 4 "78K6132" H 3875 10975 50  0001 L BNN "Field4"
+F 5 "SN74HCT125D" H 3875 10975 50  0001 L BNN "Field5"
+F 6 "SOIC-14" H 3875 10975 50  0001 L BNN "Field6"
+F 7 "Texas Instruments" H 3875 10975 50  0001 L BNN "Field7"
+	1    3875 10975
+	1    0    0    -1  
+$EndComp
+Text Label 3175 11075 2    50   ~ 0
+GND
+Text Label 3175 11375 2    50   ~ 0
+LVRnWOE
+$Comp
+L Device:R R25
+U 1 1 5EE89C3D
+P 2625 11375
+F 0 "R25" V 2800 11300 50  0000 L CNN
+F 1 "10K" V 2725 11300 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" V 2555 11375 50  0001 C CNN
+F 3 "~" H 2625 11375 50  0001 C CNN
+	1    2625 11375
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	2475 11375 2350 11375
+Text Label 2350 11375 2    50   ~ 0
+3V3
+Text Label 3175 11475 2    50   ~ 0
+GND
+Wire Wire Line
+	2925 10975 2925 10825
+Wire Wire Line
+	2925 10825 2225 10825
+Wire Wire Line
+	2925 10975 3175 10975
+Text Label 2225 10825 2    50   ~ 0
+LVRnWOUT
+Text Label 5125 18975 0    50   ~ 0
+LVRnWOE
+Text Label 5125 18875 0    50   ~ 0
+LVRnWOUT
+Wire Wire Line
+	2775 11175 3175 11175
+Wire Wire Line
+	2775 11375 3175 11375
+Wire Wire Line
+	2150 11275 3175 11275
+Text Label 4575 10775 0    50   ~ 0
+RnW
+Wire Wire Line
+	4950 10675 4575 10675
+Text Label 10150 15600 0    50   ~ 0
+LVnIRQIN
+Text Label 11350 3800 0    50   ~ 0
+LVnIRQIN
+Wire Wire Line
+	9075 10950 9075 11100
+Wire Wire Line
+	9075 11100 9325 11100
+$Comp
+L Device:D_Schottky_Small D2
+U 1 1 5EE18B23
+P 9425 11100
+F 0 "D2" H 9425 11305 50  0000 C CNN
+F 1 "D_Schottky_Small" H 9450 11200 50  0000 C CNN
+F 2 "Diode_SMD:D_SOD-323_HandSoldering" V 9425 11100 50  0001 C CNN
+F 3 "~" V 9425 11100 50  0001 C CNN
+	1    9425 11100
+	-1   0    0    1   
+$EndComp
+Text Label 9525 11100 0    50   ~ 0
+5V
+Text Label 9325 11100 1    50   ~ 0
+5VP
+Text Label 9550 7325 2    50   ~ 0
+PHIOUT
+Wire Wire Line
+	9550 7200 9550 7325
 $EndSCHEMATC

@@ -1,4 +1,4 @@
-update=15/05/2020 18:21:30
+update=03/06/2020 20:19:42
 version=1
 last_client=kicad
 [general]
@@ -251,7 +251,7 @@ dPairGap=0.25
 dPairViaGap=0.25
 [pcbnew/Netclasses/1]
 Name=3V3
-Clearance=0.2
+Clearance=0.1
 TrackWidth=0.3
 ViaDiameter=0.8
 ViaDrill=0.4
@@ -262,7 +262,7 @@ dPairGap=0.25
 dPairViaGap=0.25
 [pcbnew/Netclasses/2]
 Name=5V
-Clearance=0.2
+Clearance=0.1
 TrackWidth=0.4
 ViaDiameter=0.8
 ViaDrill=0.4
