@@ -1,0 +1,29 @@
+Info: Starting: Create block symbol file (.bsf)
+Info: qsys-generate "D:\FPGA\Electron\MAX 10 Board - Board Ver 1.02 with Mode 7 Support\ULA_UFM.qsys" --block-symbol-file --output-directory="D:\FPGA\Electron\MAX 10 Board - Board Ver 1.02 with Mode 7 Support\ULA_UFM" --family="MAX 10" --part=10M08SCE144C8G
+Progress: Loading MAX 10 Board - Board Ver 1.02 with Mode 7 Support/ULA_UFM.qsys
+Progress: Reading input file
+Progress: Adding onchip_flash_0 [altera_onchip_flash 19.1]
+Progress: Parameterizing module onchip_flash_0
+Progress: Building connections
+Progress: Parameterizing connections
+Progress: Validating
+Progress: Done reading input file
+Info: qsys-generate succeeded.
+Info: Finished: Create block symbol file (.bsf)
+Info: 
+Info: Starting: Create HDL design files for synthesis
+Info: qsys-generate "D:\FPGA\Electron\MAX 10 Board - Board Ver 1.02 with Mode 7 Support\ULA_UFM.qsys" --synthesis=VHDL --output-directory="D:\FPGA\Electron\MAX 10 Board - Board Ver 1.02 with Mode 7 Support\ULA_UFM\synthesis" --family="MAX 10" --part=10M08SCE144C8G
+Progress: Loading MAX 10 Board - Board Ver 1.02 with Mode 7 Support/ULA_UFM.qsys
+Progress: Reading input file
+Progress: Adding onchip_flash_0 [altera_onchip_flash 19.1]
+Progress: Parameterizing module onchip_flash_0
+Progress: Building connections
+Progress: Parameterizing connections
+Progress: Validating
+Progress: Done reading input file
+Info: ULA_UFM: Generating ULA_UFM "ULA_UFM" for QUARTUS_SYNTH
+Info: onchip_flash_0: Generating top-level entity altera_onchip_flash
+Info: onchip_flash_0: "ULA_UFM" instantiated altera_onchip_flash "onchip_flash_0"
+Info: ULA_UFM: Done "ULA_UFM" with 2 modules, 7 files
+Info: qsys-generate succeeded.
+Info: Finished: Create HDL design files for synthesis

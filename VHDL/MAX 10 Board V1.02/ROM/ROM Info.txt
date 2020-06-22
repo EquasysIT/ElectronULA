@@ -1,0 +1,1 @@
+The saa5050.hex file needs to be loaded into the UFM using the IP Parameter Editor (Part of adding the UFM support within the IP Catalogue). The Electron must have the Jafa ROM installed for Mode 7 to work.
