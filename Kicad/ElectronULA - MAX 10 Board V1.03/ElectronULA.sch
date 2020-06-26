@@ -467,22 +467,6 @@ Wire Wire Line
 Wire Wire Line
 	9950 7800 9950 7900
 Connection ~ 9950 7900
-Connection ~ 9550 7200
-Wire Wire Line
-	9425 7200 9550 7200
-Text Label 9550 7500 3    50   ~ 0
-GND
-$Comp
-L Device:C C24
-U 1 1 5E810049
-P 9550 7350
-F 0 "C24" H 9275 7400 50  0000 L CNN
-F 1 "2.7nf" H 9225 7325 50  0000 L CNN
-F 2 "Capacitor_SMD:C_0805_2012Metric_Pad1.15x1.40mm_HandSolder" H 9588 7200 50  0001 C CNN
-F 3 "~" H 9550 7350 50  0001 C CNN
-	1    9550 7350
-	1    0    0    -1  
-$EndComp
 $Comp
 L Device:R R6
 U 1 1 5E80FBE6
@@ -494,8 +478,6 @@ F 3 "~" H 9550 7050 50  0001 C CNN
 	1    9550 7050
 	1    0    0    -1  
 $EndComp
-Text Label 9425 7200 2    50   ~ 0
-PHIOUT
 Text Label 9950 7000 2    50   ~ 0
 ROM
 Wire Wire Line
@@ -1816,23 +1798,6 @@ Wire Wire Line
 Text Label 7475 4600 3    50   ~ 0
 3V3
 $Comp
-L Device:R R16
-U 1 1 5ED691A5
-P 9625 4350
-F 0 "R16" V 9775 4300 50  0000 L CNN
-F 1 "10K" V 9700 4275 50  0000 L CNN
-F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" V 9555 4350 50  0001 C CNN
-F 3 "~" H 9625 4350 50  0001 C CNN
-	1    9625 4350
-	-1   0    0    1   
-$EndComp
-Wire Wire Line
-	9625 4500 9625 4625
-Text Label 9625 4625 3    50   ~ 0
-3V3
-Wire Wire Line
-	9625 4200 9950 4200
-$Comp
 L Device:R R13
 U 1 1 5ED92A7C
 P 5075 6700
@@ -2184,4 +2149,90 @@ Text Label 9525 11100 0    50   ~ 0
 5V
 Text Label 9325 11100 1    50   ~ 0
 5VP
+Text Label 9550 7325 2    50   ~ 0
+PHIOUT
+Wire Wire Line
+	9550 7200 9550 7325
+Wire Wire Line
+	9625 4200 9950 4200
+Text Label 9625 3775 1    50   ~ 0
+3V3
+Wire Wire Line
+	9625 3900 9625 3775
+$Comp
+L Device:R R16
+U 1 1 5ED691A5
+P 9625 4050
+F 0 "R16" V 9525 3975 50  0000 L CNN
+F 1 "10K" V 9625 3975 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" V 9555 4050 50  0001 C CNN
+F 3 "~" H 9625 4050 50  0001 C CNN
+	1    9625 4050
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R R26
+U 1 1 5EF804BE
+P 9475 4800
+F 0 "R26" V 9475 4425 50  0000 L CNN
+F 1 "4.7K" V 9475 4725 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" V 9405 4800 50  0001 C CNN
+F 3 "~" H 9475 4800 50  0001 C CNN
+	1    9475 4800
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:R R27
+U 1 1 5EF8093F
+P 9475 4900
+F 0 "R27" V 9475 4525 50  0000 L CNN
+F 1 "4.7K" V 9475 4825 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" V 9405 4900 50  0001 C CNN
+F 3 "~" H 9475 4900 50  0001 C CNN
+	1    9475 4900
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:R R28
+U 1 1 5EF80B05
+P 9475 5000
+F 0 "R28" V 9475 4625 50  0000 L CNN
+F 1 "4.7K" V 9475 4925 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" V 9405 5000 50  0001 C CNN
+F 3 "~" H 9475 5000 50  0001 C CNN
+	1    9475 5000
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	9625 4800 9950 4800
+Wire Wire Line
+	9625 4900 9950 4900
+Wire Wire Line
+	9625 5000 9950 5000
+$Comp
+L Device:R R29
+U 1 1 5EFB2041
+P 9475 5100
+F 0 "R29" V 9475 4725 50  0000 L CNN
+F 1 "4.7K" V 9475 5025 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" V 9405 5100 50  0001 C CNN
+F 3 "~" H 9475 5100 50  0001 C CNN
+	1    9475 5100
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	9625 5100 9950 5100
+Wire Wire Line
+	9325 4800 9325 4900
+Connection ~ 9325 4900
+Wire Wire Line
+	9325 4900 9325 5000
+Connection ~ 9325 5000
+Wire Wire Line
+	9325 5000 9325 5100
+Wire Wire Line
+	9325 4800 9325 4700
+Connection ~ 9325 4800
+Text Label 9325 4700 0    50   ~ 0
+5V
 $EndSCHEMATC
