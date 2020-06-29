@@ -113,11 +113,12 @@ set_location_assignment PIN_85 -to green
 set_location_assignment PIN_86 -to red
 set_location_assignment PIN_93 -to casOut
 set_location_assignment PIN_106 -to PD_OE
-
-
+set_location_assignment PIN_114 -to SW1
+set_location_assignment PIN_113 -to SW2
+set_location_assignment PIN_112 -to SW3
+set_location_assignment PIN_111 -to SW4
 
 #set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to nNMI
-
 
 set_global_assignment -name VCCA_USER_VOLTAGE 3.3V
 set_global_assignment -name NUM_PARALLEL_PROCESSORS 4
@@ -189,6 +190,11 @@ set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to green
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to red
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to casOut
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to PD_OE
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to SW1
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to SW2
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to SW3
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to SW4
+
 set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to kbd[0]
 set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to kbd[1]
 set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to kbd[2]
