@@ -55,15 +55,6 @@
 --
 -- (C) 2015 David Banks
 
-
-
-
---
--- Character rounding needs fixing by copying Character ROM from UFM to block RAM rather than accessing UFM directly
---
--- A Burgess
-
-
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.std_logic_unsigned.all;
@@ -72,7 +63,6 @@ use ieee.numeric_std.all;
 entity saa5050 is
 port (
     CLOCK       :   in  std_logic;
-	 CLOCK_32    :   in  std_logic;
     -- 6 MHz dot clock enable
     CLKEN       :   in  std_logic;
     -- Async reset
@@ -98,31 +88,16 @@ port (
     R           :   out std_logic;
     G           :   out std_logic;
     B           :   out std_logic;
-    Y           :   out std_logic
+    Y           :   out std_logic;
+
+    -- SAA5050 character ROM loading
+    char_rom_we   : in std_logic := '0';
+    char_rom_addr : in std_logic_vector(11 downto 0) := (others => '0');
+    char_rom_data : in std_logic_vector(7 downto 0) := (others => '0')
     );
 end entity;
 
 architecture rtl of saa5050 is
-
-    component ULA_UFM is
-        port (
-            clock                   : in  std_logic;
-            avmm_csr_addr           : in  std_logic := '0';
-            avmm_csr_read           : in  std_logic := '0';
-            avmm_csr_writedata      : in  std_logic_vector(31 downto 0) := (others => '0');
-            avmm_csr_write          : in  std_logic := '0';
-            avmm_csr_readdata       : out std_logic_vector(31 downto 0);
-            avmm_data_addr          : in  std_logic_vector(12 downto 0);
-            avmm_data_read          : in  std_logic;
-            avmm_data_writedata     : in  std_logic_vector(31 downto 0) := (others => '0');
-            avmm_data_write         : in  std_logic := '0';
-            avmm_data_readdata      : out std_logic_vector(31 downto 0);
-            avmm_data_waitrequest   : out std_logic;
-            avmm_data_readdatavalid : out std_logic;
-            avmm_data_burstcount    : in  std_logic_vector(1 downto 0) := "01";
-            reset_n                 : in  std_logic
-        );
-    end component ULA_UFM;
 
 -- Register inputs in the bus clock domain
 signal di_r         :   std_logic_vector(6 downto 0);
@@ -197,16 +172,6 @@ signal hold_active      : std_logic;
 signal double_high1 :   std_logic;
 -- Set in second row of double height
 signal double_high2 :   std_logic;
-
-signal rom_data32        : std_logic_vector(31 downto 0);
-signal rom_data          : std_logic_vector(7 downto 0);
-signal rom_data_pos      : std_logic_vector(1 downto 0);
-signal rom_en            : std_logic := '0';
-signal data_waitrequest   : std_logic;
-signal data_readdatavalid : std_logic;
-
-type readflash is ( start, readf );
-signal state :	readflash := start;
 
 begin
 
@@ -486,7 +451,7 @@ begin
                     -- e.g. 03 (Alpha Yellow) 18 (Conceal) should leave us in a conceal state
                     if conceal = '1' and unconceal_next = '1' then
                         conceal <= '0';
-                    end if;                    
+                    end if;
                 end if;
             end if;
         end if;
@@ -505,73 +470,25 @@ begin
 
     hold_active <= '1' when gfx_hold = '1' and code_r(6 downto 5) = "00" else '0';
 
-    rom_address1 <= (others => '0') when (double_high = '0' and double_high2 = '1') else
+    rom_address1 <= char_rom_addr when char_rom_we = '1' else
+                    (others => '0') when (double_high = '0' and double_high2 = '1') else
                     gfx & last_gfx & std_logic_vector(line_addr) when hold_active = '1' else
                     gfx & code_r & std_logic_vector(line_addr);
 
     -- reference row for character rounding
     rom_address2 <= rom_address1 + 1 when ((double_high = '0' and CRS = '1') or (double_high = '1' and line_counter(0) = '1')) else
                     rom_address1 - 1;
-						  
-	     -- Select correct byte from the 32 bit data read from the UFM
-	 process(CLOCK_32)
-	 begin
-		if rising_edge(CLOCK_32) then
-			case state is
-				when start =>
-					rom_en <= '0';
-					if data_waitrequest = '0' then
-						state <= readf;
-					end if;
-				when readf =>
-					rom_en <= '1';
-					if data_readdatavalid = '1' then
-						rom_data_pos <= rom_address1(1 downto 0);
-						case rom_data_pos is
-							when "00" =>
-								rom_data1 <= rom_data32(7 downto 0);
-							when "01" =>
-								rom_data1 <= rom_data32(15 downto 8);
-							when "10" =>
-								rom_data1 <= rom_data32(23 downto 16);
-							when "11" =>
-								rom_data1 <= rom_data32(31 downto 24);
-						end case;
-						state <= start;
-					end if;
-			end case;
-		end if;
-	end process;
-  
-	 u0 : component ULA_UFM
-        port map (
-            clock                   => CLOCK_32,
-            avmm_csr_addr           => '0',
-            avmm_csr_read           => '0',
-            avmm_csr_writedata      => "00000000000000000000000000000000",
-            avmm_csr_write          => '0',
-            avmm_csr_readdata       => open,
-				avmm_data_addr          => "000" & rom_address1(11 downto 2),
-            avmm_data_read          => rom_en,
-            avmm_data_writedata     => "00000000000000000000000000000000",
-            avmm_data_write         => '0',
-            avmm_data_readdata      => rom_data32,
-            avmm_data_waitrequest   => data_waitrequest,
-            avmm_data_readdatavalid => data_readdatavalid,
-            avmm_data_burstcount    => "01",
-            reset_n                 => '1'
-        );
 
 
---    char_rom : entity work.saa5050_rom_dual_port_uninitialized port map (
---        clock    => CLOCK,
---        wea      => '0',
---        addressA => rom_address1,
---        dina     => "11111111",
---        QA       => rom_data1,
---        addressB => rom_address2,
---        QB       => rom_data2
---    );
+        char_ram : entity work.saa5050_rom_dual_port_uninitialized port map (
+            clock    => CLOCK,
+            wea      => char_rom_we,
+            addressA => rom_address1,
+            dina     => char_rom_data,
+            QA       => rom_data1,
+            addressB => rom_address2,
+            QB       => rom_data2
+            );
 
     --------------------------------------------------------------------
     -- Shift register

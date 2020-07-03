@@ -67,7 +67,7 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
   </table>
   <table class="blueBar">
    <tr>
-    <td class="l">2020.06.17.20:45:29</td>
+    <td class="l">2020.07.02.12:54:51</td>
     <td class="r">Datasheet</td>
    </tr>
   </table>
@@ -85,7 +85,7 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
      <br/>All Components
      <br/>&#160;&#160;
      <a href="#module_onchip_flash_0"><b>onchip_flash_0</b>
-     </a> altera_onchip_flash 19.1</span>
+     </a> altera_onchip_flash 17.0</span>
    </div>
   </div>
   <div style="width:100% ;  height:10px"> </div>
@@ -101,16 +101,13 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
     </td>
    </tr>
    <tr>
-    <td class="slavem">data&#160;</td>
-   </tr>
-   <tr>
-    <td class="slavem">csr&#160;</td>
+    <td class="slaveb">data&#160;</td>
    </tr>
   </table>
   <a name="module_onchip_flash_0"> </a>
   <div>
    <hr/>
-   <h2>onchip_flash_0</h2>altera_onchip_flash v19.1
+   <h2>onchip_flash_0</h2>altera_onchip_flash v17.0
    <br/>
    <br/>
    <br/>
@@ -145,15 +142,15 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
        </tr>
        <tr>
         <td class="parametername">SECTOR_ID</td>
-        <td class="parametervalue">1,2,NA,NA,NA</td>
+        <td class="parametervalue">1,2,NA,3,4</td>
        </tr>
        <tr>
         <td class="parametername">SECTOR_ACCESS_MODE</td>
-        <td class="parametervalue">Read and write,Read and write,Read only,Hidden,Hidden</td>
+        <td class="parametervalue">Read only,Read only,Read only,Read only,Read only</td>
        </tr>
        <tr>
         <td class="parametername">SECTOR_ADDRESS_MAPPING</td>
-        <td class="parametervalue">0x00000 - 0x03fff,0x04000 - 0x07fff,NA,NA,NA</td>
+        <td class="parametervalue">0x00000 - 0x03fff,0x04000 - 0x07fff,NA,0x08000 - 0x167ff,0x16800 - 0x397ff</td>
        </tr>
        <tr>
         <td class="parametername">SECTOR_STORAGE_TYPE</td>
@@ -169,11 +166,11 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
        </tr>
        <tr>
         <td class="parametername">initializationFileName</td>
-        <td class="parametervalue">D:/FPGA/Electron/MAX 10 Board - Board Ver 1.02 with Mode 7 Support/ROM/saa5050.hex</td>
+        <td class="parametervalue">D:/FPGA/Electron/AB/ROM/saa5050.hex</td>
        </tr>
        <tr>
         <td class="parametername">initializationFileNameForSim</td>
-        <td class="parametervalue">D:/FPGA/Electron/MAX 10 Board - Board Ver 1.02 with Mode 7 Support/ROM/saa5050.hex</td>
+        <td class="parametervalue">D:/FPGA/Electron/AB/ROM/saa5050.hex</td>
        </tr>
        <tr>
         <td class="parametername">autoInitializationFileName</td>
@@ -181,11 +178,11 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
        </tr>
        <tr>
         <td class="parametername">INIT_FILENAME</td>
-        <td class="parametervalue">D:/FPGA/Electron/MAX 10 Board - Board Ver 1.02 with Mode 7 Support/ROM/saa5050.hex</td>
+        <td class="parametervalue">D:/FPGA/Electron/AB/ROM/saa5050.hex</td>
        </tr>
        <tr>
         <td class="parametername">INIT_FILENAME_SIM</td>
-        <td class="parametervalue">D:/FPGA/Electron/MAX 10 Board - Board Ver 1.02 with Mode 7 Support/ROM/saa5050.hex</td>
+        <td class="parametervalue">D:/FPGA/Electron/AB/ROM/saa5050.hex</td>
        </tr>
        <tr>
         <td class="parametername">DEVICE_FAMILY</td>
@@ -221,19 +218,19 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
        </tr>
        <tr>
         <td class="parametername">SECTOR3_START_ADDR</td>
-        <td class="parametervalue">0</td>
+        <td class="parametervalue">8192</td>
        </tr>
        <tr>
         <td class="parametername">SECTOR3_END_ADDR</td>
-        <td class="parametervalue">0</td>
+        <td class="parametervalue">23039</td>
        </tr>
        <tr>
         <td class="parametername">SECTOR4_START_ADDR</td>
-        <td class="parametervalue">0</td>
+        <td class="parametervalue">23040</td>
        </tr>
        <tr>
         <td class="parametername">SECTOR4_END_ADDR</td>
-        <td class="parametervalue">0</td>
+        <td class="parametervalue">58879</td>
        </tr>
        <tr>
         <td class="parametername">SECTOR5_START_ADDR</td>
@@ -249,7 +246,7 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
        </tr>
        <tr>
         <td class="parametername">MAX_VALID_ADDR</td>
-        <td class="parametervalue">8191</td>
+        <td class="parametervalue">58879</td>
        </tr>
        <tr>
         <td class="parametername">MIN_UFM_VALID_ADDR</td>
@@ -269,11 +266,11 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
        </tr>
        <tr>
         <td class="parametername">SECTOR3_MAP</td>
-        <td class="parametervalue">0</td>
+        <td class="parametervalue">4</td>
        </tr>
        <tr>
         <td class="parametername">SECTOR4_MAP</td>
-        <td class="parametervalue">0</td>
+        <td class="parametervalue">5</td>
        </tr>
        <tr>
         <td class="parametername">SECTOR5_MAP</td>
@@ -284,24 +281,16 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
         <td class="parametervalue">8191</td>
        </tr>
        <tr>
-        <td class="parametername">ADDR_RANGE2_END_ADDR</td>
-        <td class="parametervalue">8191</td>
-       </tr>
-       <tr>
         <td class="parametername">ADDR_RANGE1_OFFSET</td>
         <td class="parametervalue">512</td>
        </tr>
        <tr>
         <td class="parametername">ADDR_RANGE2_OFFSET</td>
-        <td class="parametervalue">0</td>
-       </tr>
-       <tr>
-        <td class="parametername">ADDR_RANGE3_OFFSET</td>
-        <td class="parametervalue">0</td>
+        <td class="parametervalue">21504</td>
        </tr>
        <tr>
         <td class="parametername">AVMM_DATA_ADDR_WIDTH</td>
-        <td class="parametervalue">13</td>
+        <td class="parametervalue">16</td>
        </tr>
        <tr>
         <td class="parametername">AVMM_DATA_DATA_WIDTH</td>
@@ -313,7 +302,7 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
        </tr>
        <tr>
         <td class="parametername">SECTOR_READ_PROTECTION_MODE</td>
-        <td class="parametervalue">28</td>
+        <td class="parametervalue">31</td>
        </tr>
        <tr>
         <td class="parametername">FLASH_SEQ_READ_DATA_COUNT</td>
@@ -349,7 +338,7 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
        </tr>
        <tr>
         <td class="parametername">READ_AND_WRITE_MODE</td>
-        <td class="parametervalue">true</td>
+        <td class="parametervalue">false</td>
        </tr>
        <tr>
         <td class="parametername">WRAPPING_BURST_MODE</td>
@@ -390,7 +379,7 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
        </tr>
        <tr>
         <td class="parametername">READ_ONLY_MODE</td>
-        <td class="parametervalue">0</td>
+        <td class="parametervalue">1</td>
        </tr>
        <tr>
         <td class="parametername">SECTOR1_ENABLED</td>
@@ -418,27 +407,27 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
        </tr>
        <tr>
         <td class="parametername">SECTOR3_ENABLED</td>
-        <td class="parametervalue">0</td>
+        <td class="parametervalue">1</td>
        </tr>
        <tr>
         <td class="parametername">SECTOR3_END_ADDR</td>
-        <td class="parametervalue">-1</td>
+        <td class="parametervalue">92159</td>
        </tr>
        <tr>
         <td class="parametername">SECTOR3_START_ADDR</td>
-        <td class="parametervalue">-1</td>
+        <td class="parametervalue">32768</td>
        </tr>
        <tr>
         <td class="parametername">SECTOR4_ENABLED</td>
-        <td class="parametervalue">0</td>
+        <td class="parametervalue">1</td>
        </tr>
        <tr>
         <td class="parametername">SECTOR4_END_ADDR</td>
-        <td class="parametervalue">-1</td>
+        <td class="parametervalue">235519</td>
        </tr>
        <tr>
         <td class="parametername">SECTOR4_START_ADDR</td>
-        <td class="parametervalue">-1</td>
+        <td class="parametervalue">92160</td>
        </tr>
        <tr>
         <td class="parametername">SECTOR5_ENABLED</td>

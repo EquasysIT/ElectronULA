@@ -1,10 +1,10 @@
-// (C) 2001-2019 Intel Corporation. All rights reserved.
+// (C) 2001-2017 Intel Corporation. All rights reserved.
 // Your use of Intel Corporation's design tools, logic functions and other 
 // software and tools, and its AMPP partner logic functions, and any output 
-// files from any of the foregoing (including device programming or simulation 
+// files any of the foregoing (including device programming or simulation 
 // files), and any associated documentation or information are expressly subject 
 // to the terms and conditions of the Intel Program License Subscription 
-// Agreement, Intel FPGA IP License Agreement, or other applicable 
+// Agreement, Intel MegaCore Function License Agreement, or other applicable 
 // license agreement, including, without limitation, that your use is for the 
 // sole purpose of programming logic devices manufactured by Intel and sold by 
 // Intel or its authorized distributors.  Please refer to the applicable 
@@ -107,10 +107,9 @@ module  altera_onchip_flash (
 	parameter SECTOR4_MAP = 1;
 	parameter SECTOR5_MAP = 1;
 	parameter ADDR_RANGE1_END_ADDR = 1;
-	parameter ADDR_RANGE2_END_ADDR = 1;
 	parameter ADDR_RANGE1_OFFSET = 1;
 	parameter ADDR_RANGE2_OFFSET = 1;
-	parameter ADDR_RANGE3_OFFSET = 1;
+	
 	// To/From System
 	input clock;
 	input reset_n;
@@ -239,10 +238,8 @@ module  altera_onchip_flash (
 		.SECTOR4_MAP (SECTOR4_MAP),
 		.SECTOR5_MAP (SECTOR5_MAP),
 		.ADDR_RANGE1_END_ADDR (ADDR_RANGE1_END_ADDR),
-		.ADDR_RANGE2_END_ADDR (ADDR_RANGE2_END_ADDR),
 		.ADDR_RANGE1_OFFSET (ADDR_RANGE1_OFFSET),
-		.ADDR_RANGE2_OFFSET (ADDR_RANGE2_OFFSET),
-		.ADDR_RANGE3_OFFSET (ADDR_RANGE3_OFFSET)
+		.ADDR_RANGE2_OFFSET (ADDR_RANGE2_OFFSET)
 
 	) avmm_data_controller ( 
 		// To/From System
@@ -297,10 +294,9 @@ module  altera_onchip_flash (
 		.MIN_UFM_VALID_ADDR (MIN_UFM_VALID_ADDR),
 		.MAX_UFM_VALID_ADDR (MAX_UFM_VALID_ADDR),
 		.ADDR_RANGE1_END_ADDR (ADDR_RANGE1_END_ADDR),
-        .ADDR_RANGE2_END_ADDR (ADDR_RANGE2_END_ADDR),
 		.ADDR_RANGE1_OFFSET (ADDR_RANGE1_OFFSET),
 		.ADDR_RANGE2_OFFSET (ADDR_RANGE2_OFFSET),
-		.ADDR_RANGE3_OFFSET (ADDR_RANGE3_OFFSET),
+
 		// simulation only start
 		.DEVICE_ID (DEVICE_ID),
 		.INIT_FILENAME_SIM (INIT_FILENAME_SIM)

@@ -18,15 +18,10 @@ use ieee.std_logic_1164.all;
 use ieee.std_logic_unsigned.all;
 use ieee.numeric_std.all;
 
--- TODO:
--- NMI_n needs adding
-
-
 -- Board Specific changes to support the ULA Replacement Board V1.02 - A Burgess
 
--- Currently issues with the keyboard when running above "1Mhz No Connection" i.e. Turbo "00" is okay others are not
 
--- Remember to fix the UFM error in altera_onchip_flash_avmm_data_controller.v, change the "assign flash" line.....
+-- Remember to fix the UFM error on some versions of Quartus in altera_onchip_flash_avmm_data_controller.v, change the "assign flash" line.....
 -- See https://www.intel.com/content/www/us/en/programmable/support/support-resources/knowledge-base/solutions/rd10162015_230.html
 
 entity ElectronULA is
@@ -45,24 +40,25 @@ entity ElectronULA is
 		  RnWOE       : out  std_logic;
 		  nIRQIN      : in  std_logic;
         nIRQOUT     : out std_logic;
+		  nNMI		  : in std_logic;
 		  
 		  -- Reset
 		  nRSTIN		  : in std_logic;
 		  nRSTOUT     : out  std_logic;
 		  
-        -- Rom Enable
-        ROM_n         : out std_logic;
-
         -- Video
         red           : out std_logic;
         green         : out std_logic;
         blue          : out std_logic;
         csync         : out std_logic;
 		  nhs           : out std_logic;
+		  
+		  -- ROM
+		  ROM_n         : out std_logic;
 
         -- Audio
         sound         : out std_logic;
-
+		  
         -- Keyboard
         kbd           : in  std_logic_vector(3 downto 0);
         caps          : out std_logic;
@@ -91,20 +87,20 @@ entity ElectronULA is
 		  
 		  -- Keyboard, Clock In, nIRQ, RnW, nNMI Buffer
 		  G4_OE         : out std_logic
-		  
+		  		  
         );
 end;
 
 architecture behavioral of ElectronULA is
 
+-- Main System Clock
 signal clock_16          : std_logic;
+
+-- SAA5050 Clock
 signal clock_24          : std_logic;
 
 -- Clock for UFM on MAX10
-signal clock_32          : std_logic;
-													
-signal clk_counter       : std_logic_vector(2 downto 0);
-signal cpu_clken         : std_logic;
+signal clock_112         : std_logic;							
 
 signal data_in           : std_logic_vector(7 downto 0);
 
@@ -119,11 +115,22 @@ signal video_vsync       : std_logic;
 signal rom_latch         : std_logic_vector(3 downto 0);
 
 signal powerup_reset_n   : std_logic;
-signal reset_counter     : std_logic_vector (15 downto 0) := (others => '0'); -- Needed to set to zero. Does the MAX 10 default to random settings for registers ?
+signal reset_counter     : std_logic_vector (15 downto 0) := (others => '0');
 
 signal turbo             : std_logic_vector(1 downto 0);
 
 signal caps_led          : std_logic;
+signal cpu_clk_out       : std_logic;
+
+-- SAA5050 Character ROM signals
+signal char_rom_we       : std_logic := '0';
+signal char_rom_addr     : std_logic_vector(11 downto 0) := (others => '0');
+signal char_rom_data     : std_logic_vector(7 downto 0) := (others => '0');
+
+-- UFM
+signal read_requested	 : std_logic;
+signal read_valid			 : std_logic;
+signal ufm_data			 : std_logic_vector(7 downto 0);
 
 begin
 
@@ -132,30 +139,45 @@ begin
 		inclk0 => clk_in,
 		c0		=> clock_16,
 		c1		=> clock_24,
-		c2		=> clock_32
+		c2		=> clock_112
 	);
 	
-    -- TODO
-    -- clk_out is not correct as the low time is always 250ns
-    clk_gen : process(clock_16)
-    begin
-        if rising_edge(clock_16) then
-            if cpu_clken = '1' then
-                clk_counter <= (others => '0');
-                clk_out <= '0';
-            elsif clk_counter(2) = '0' then
-                clk_counter <= clk_counter + 1;
-            else
-                clk_out <= '1';
-            end if;
-        end if;
-    end process;
 
+--------------------------------------------------------
+-- Initalise SAA5050 Character ROM
+--------------------------------------------------------
+
+	  init_charrom : process(clock_24)
+	  begin
+			if rising_edge(clock_24) then
+				if char_rom_addr /= 4095 then
+					if read_valid = '1' then
+						char_rom_addr <= char_rom_addr + 1;
+						char_rom_data <= ufm_data;
+					end if;
+					char_rom_we <= '1';
+				else
+					char_rom_we <= '0';
+				end if;
+			end if;
+	  end process;
+	  
+	  ufmrom : entity work.ufmrom port map(
+		 clock_112 => clock_112,
+		 romaddress => char_rom_addr,
+		 romdata => ufm_data,
+		 romen => '1',
+		 reset_n => '1',
+		 read_requested => read_requested,
+		 read_valid => read_valid
+     );
+
+	 
+	 
     ula : entity work.ElectronULACore
 	 port map (
         clk_16M00 => clock_16,
 		  clk_24M00 => clock_24,
-        clk_32M32 => clock_32,
 
         -- CPU Interface
         addr      => addr,
@@ -165,17 +187,17 @@ begin
         R_W_n     => RnWIN,
         RST_n     => nRSTIN,
         IRQ_n     => ula_irq_n,
-        NMI_n     => '1',
-
-        -- Rom Enable
-        ROM_n     => ROM_n,
-
+        NMI_n     => nNMI,
+		  
         -- Video
         red       => video_red,
         green     => video_green,
         blue      => video_blue,
         vsync     => video_vsync,
         hsync     => video_hsync,
+		  
+		  -- ROM
+		  ROM_n		=> ROM_n,
 
         -- Audio
         sound     => sound,
@@ -196,9 +218,14 @@ begin
         mode_init => "00",
 
         -- Clock Generation
-        cpu_clken_out  => cpu_clken,
+		  cpu_clk_out	  => cpu_clk_out,
         turbo          => turbo,
-        turbo_out      => turbo
+        turbo_out      => turbo,
+		  
+		  char_rom_we	  => char_rom_we,
+        char_rom_addr  => char_rom_addr,	
+        char_rom_data  => char_rom_data
+
     );
 
     red   <= video_red(3);
@@ -215,7 +242,9 @@ begin
 
 	 data <= ula_data when RnWIN = '1' and ula_enable = '1' else
 		"ZZZZZZZZ";
-		
+	
+	 clk_out <= cpu_clk_out;
+	 
 --------------------------------------------------------
 -- Buffer Control
 --------------------------------------------------------
@@ -241,7 +270,7 @@ begin
 	  -- Only used when internal 6502 is implemented
 	  RnWOE <= '1';
 	  RnWOUT <= '0';
-	  
+
 	  
 --------------------------------------------------------
 -- Power Up Reset Generation

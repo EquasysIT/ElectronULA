@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <deploy
- date="2020.06.17.20:45:32"
- outputDirectory="D:/FPGA/Electron/MAX 10 Board - Board Ver 1.02 with Mode 7 Support/ULA_UFM/">
+ date="2020.07.02.12:54:54"
+ outputDirectory="D:/FPGA/Electron/AB/ULA_UFM/">
  <perimeter>
   <parameter
      name="AUTO_GENERATION_ID"
@@ -57,62 +57,10 @@
    <property name="ptfSchematicName" value="" />
    <port name="clock" direction="input" role="clk" width="1" />
   </interface>
-  <interface name="csr" kind="avalon" start="0">
-   <property name="addressAlignment" value="DYNAMIC" />
-   <property name="addressGroup" value="0" />
-   <property name="addressSpan" value="8" />
-   <property name="addressUnits" value="WORDS" />
-   <property name="alwaysBurstMaxBurst" value="false" />
-   <property name="associatedClock" value="clk" />
-   <property name="associatedReset" value="nreset" />
-   <property name="bitsPerSymbol" value="8" />
-   <property name="bridgedAddressOffset" value="0" />
-   <property name="bridgesToMaster" value="" />
-   <property name="burstOnBurstBoundariesOnly" value="false" />
-   <property name="burstcountUnits" value="WORDS" />
-   <property name="constantBurstBehavior" value="false" />
-   <property name="explicitAddressSpan" value="0" />
-   <property name="holdTime" value="0" />
-   <property name="interleaveBursts" value="false" />
-   <property name="isBigEndian" value="false" />
-   <property name="isFlash" value="false" />
-   <property name="isMemoryDevice" value="false" />
-   <property name="isNonVolatileStorage" value="false" />
-   <property name="linewrapBursts" value="false" />
-   <property name="maximumPendingReadTransactions" value="0" />
-   <property name="maximumPendingWriteTransactions" value="0" />
-   <property name="minimumUninterruptedRunLength" value="0" />
-   <property name="printableDevice" value="false" />
-   <property name="readLatency" value="0" />
-   <property name="readWaitStates" value="1" />
-   <property name="readWaitTime" value="1" />
-   <property name="registerIncomingSignals" value="false" />
-   <property name="registerOutgoingSignals" value="false" />
-   <property name="setupTime" value="0" />
-   <property name="timingUnits" value="Cycles" />
-   <property name="transparentBridge" value="false" />
-   <property name="wellBehavedWaitrequest" value="false" />
-   <property name="writeLatency" value="0" />
-   <property name="writeWaitStates" value="0" />
-   <property name="writeWaitTime" value="0" />
-   <port name="avmm_csr_addr" direction="input" role="address" width="1" />
-   <port name="avmm_csr_read" direction="input" role="read" width="1" />
-   <port
-       name="avmm_csr_writedata"
-       direction="input"
-       role="writedata"
-       width="32" />
-   <port name="avmm_csr_write" direction="input" role="write" width="1" />
-   <port
-       name="avmm_csr_readdata"
-       direction="output"
-       role="readdata"
-       width="32" />
-  </interface>
   <interface name="data" kind="avalon" start="0">
    <property name="addressAlignment" value="DYNAMIC" />
    <property name="addressGroup" value="0" />
-   <property name="addressSpan" value="32768" />
+   <property name="addressSpan" value="235520" />
    <property name="addressUnits" value="WORDS" />
    <property name="alwaysBurstMaxBurst" value="false" />
    <property name="associatedClock" value="clk" />
@@ -123,7 +71,7 @@
    <property name="burstOnBurstBoundariesOnly" value="false" />
    <property name="burstcountUnits" value="WORDS" />
    <property name="constantBurstBehavior" value="false" />
-   <property name="explicitAddressSpan" value="32768" />
+   <property name="explicitAddressSpan" value="235520" />
    <property name="holdTime" value="0" />
    <property name="interleaveBursts" value="false" />
    <property name="isBigEndian" value="false" />
@@ -147,14 +95,8 @@
    <property name="writeLatency" value="0" />
    <property name="writeWaitStates" value="0" />
    <property name="writeWaitTime" value="0" />
-   <port name="avmm_data_addr" direction="input" role="address" width="13" />
+   <port name="avmm_data_addr" direction="input" role="address" width="16" />
    <port name="avmm_data_read" direction="input" role="read" width="1" />
-   <port
-       name="avmm_data_writedata"
-       direction="input"
-       role="writedata"
-       width="32" />
-   <port name="avmm_data_write" direction="input" role="write" width="1" />
    <port
        name="avmm_data_readdata"
        direction="output"
@@ -184,13 +126,13 @@
  </perimeter>
  <entity
    path=""
-   parameterizationKey="ULA_UFM:1.0:AUTO_CLK_CLOCK_DOMAIN=-1,AUTO_CLK_CLOCK_RATE=-1,AUTO_CLK_RESET_DOMAIN=-1,AUTO_DEVICE=10M08SCE144C8G,AUTO_DEVICE_FAMILY=MAX 10,AUTO_DEVICE_SPEEDGRADE=8,AUTO_GENERATION_ID=1592423129,AUTO_UNIQUE_ID=(altera_onchip_flash:19.1:ADDR_RANGE1_END_ADDR=8191,ADDR_RANGE1_OFFSET=512,ADDR_RANGE2_END_ADDR=8191,ADDR_RANGE2_OFFSET=0,ADDR_RANGE3_OFFSET=0,AUTO_CLOCK_RATE=0,AVMM_DATA_ADDR_WIDTH=13,AVMM_DATA_BURSTCOUNT_WIDTH=2,AVMM_DATA_DATA_WIDTH=32,CLOCK_FREQUENCY=112.0,CONFIGURATION_MODE=Single Uncompressed Image,CONFIGURATION_SCHEME=Internal Configuration,DATA_INTERFACE=Parallel,DEVICE_FAMILY=MAX 10,DEVICE_ID=08,FLASH_ADDR_ALIGNMENT_BITS=1,FLASH_BUSY_TIMEOUT_CYCLE_MAX_INDEX=134,FLASH_ERASE_TIMEOUT_CYCLE_MAX_INDEX=39200000,FLASH_READ_CYCLE_MAX_INDEX=4,FLASH_RESET_CYCLE_MAX_INDEX=27,FLASH_SEQ_READ_DATA_COUNT=2,FLASH_WRITE_TIMEOUT_CYCLE_MAX_INDEX=34160,INIT_FILENAME=D:/FPGA/Electron/MAX 10 Board - Board Ver 1.02 with Mode 7 Support/ROM/saa5050.hex,INIT_FILENAME_SIM=D:/FPGA/Electron/MAX 10 Board - Board Ver 1.02 with Mode 7 Support/ROM/saa5050.hex,IS_COMPRESSED_IMAGE=False,IS_DUAL_BOOT=False,IS_ERAM_SKIP=True,MAX_UFM_VALID_ADDR=8191,MAX_VALID_ADDR=8191,MIN_UFM_VALID_ADDR=0,MIN_VALID_ADDR=0,PARALLEL_MODE=true,PART_NAME=10M08SCE144C8G,READ_AND_WRITE_MODE=true,READ_BURST_COUNT=2,READ_BURST_MODE=Incrementing,SECTOR1_END_ADDR=4095,SECTOR1_MAP=1,SECTOR1_START_ADDR=0,SECTOR2_END_ADDR=8191,SECTOR2_MAP=2,SECTOR2_START_ADDR=4096,SECTOR3_END_ADDR=0,SECTOR3_MAP=0,SECTOR3_START_ADDR=0,SECTOR4_END_ADDR=0,SECTOR4_MAP=0,SECTOR4_START_ADDR=0,SECTOR5_END_ADDR=0,SECTOR5_MAP=0,SECTOR5_START_ADDR=0,SECTOR_ACCESS_MODE=Read and write,Read and write,Read only,Hidden,Hidden,SECTOR_ADDRESS_MAPPING=0x00000 - 0x03fff,0x04000 - 0x07fff,NA,NA,NA,SECTOR_ID=1,2,NA,NA,NA,SECTOR_READ_PROTECTION_MODE=28,SECTOR_STORAGE_TYPE=UFM,UFM,NA,CFM,CFM,WRAPPING_BURST_MODE=false,autoInitializationFileName=ULA_UFM_onchip_flash_0,initFlashContent=true,initializationFileName=D:/FPGA/Electron/MAX 10 Board - Board Ver 1.02 with Mode 7 Support/ROM/saa5050.hex,initializationFileNameForSim=D:/FPGA/Electron/MAX 10 Board - Board Ver 1.02 with Mode 7 Support/ROM/saa5050.hex,useNonDefaultInitFile=true)"
+   parameterizationKey="ULA_UFM:1.0:AUTO_CLK_CLOCK_DOMAIN=-1,AUTO_CLK_CLOCK_RATE=-1,AUTO_CLK_RESET_DOMAIN=-1,AUTO_DEVICE=10M08SCE144C8G,AUTO_DEVICE_FAMILY=MAX 10,AUTO_DEVICE_SPEEDGRADE=8,AUTO_GENERATION_ID=1593690891,AUTO_UNIQUE_ID=(altera_onchip_flash:17.0:ADDR_RANGE1_END_ADDR=8191,ADDR_RANGE1_OFFSET=512,ADDR_RANGE2_OFFSET=21504,AUTO_CLOCK_RATE=0,AVMM_DATA_ADDR_WIDTH=16,AVMM_DATA_BURSTCOUNT_WIDTH=2,AVMM_DATA_DATA_WIDTH=32,CLOCK_FREQUENCY=112.0,CONFIGURATION_MODE=Single Uncompressed Image,CONFIGURATION_SCHEME=Internal Configuration,DATA_INTERFACE=Parallel,DEVICE_FAMILY=MAX 10,DEVICE_ID=08,FLASH_ADDR_ALIGNMENT_BITS=1,FLASH_BUSY_TIMEOUT_CYCLE_MAX_INDEX=134,FLASH_ERASE_TIMEOUT_CYCLE_MAX_INDEX=39200000,FLASH_READ_CYCLE_MAX_INDEX=4,FLASH_RESET_CYCLE_MAX_INDEX=27,FLASH_SEQ_READ_DATA_COUNT=2,FLASH_WRITE_TIMEOUT_CYCLE_MAX_INDEX=34160,INIT_FILENAME=D:/FPGA/Electron/AB/ROM/saa5050.hex,INIT_FILENAME_SIM=D:/FPGA/Electron/AB/ROM/saa5050.hex,IS_COMPRESSED_IMAGE=False,IS_DUAL_BOOT=False,IS_ERAM_SKIP=True,MAX_UFM_VALID_ADDR=8191,MAX_VALID_ADDR=58879,MIN_UFM_VALID_ADDR=0,MIN_VALID_ADDR=0,PARALLEL_MODE=true,PART_NAME=10M08SCE144C8G,READ_AND_WRITE_MODE=false,READ_BURST_COUNT=2,READ_BURST_MODE=Incrementing,SECTOR1_END_ADDR=4095,SECTOR1_MAP=1,SECTOR1_START_ADDR=0,SECTOR2_END_ADDR=8191,SECTOR2_MAP=2,SECTOR2_START_ADDR=4096,SECTOR3_END_ADDR=23039,SECTOR3_MAP=4,SECTOR3_START_ADDR=8192,SECTOR4_END_ADDR=58879,SECTOR4_MAP=5,SECTOR4_START_ADDR=23040,SECTOR5_END_ADDR=0,SECTOR5_MAP=0,SECTOR5_START_ADDR=0,SECTOR_ACCESS_MODE=Read only,Read only,Read only,Read only,Read only,SECTOR_ADDRESS_MAPPING=0x00000 - 0x03fff,0x04000 - 0x07fff,NA,0x08000 - 0x167ff,0x16800 - 0x397ff,SECTOR_ID=1,2,NA,3,4,SECTOR_READ_PROTECTION_MODE=31,SECTOR_STORAGE_TYPE=UFM,UFM,NA,CFM,CFM,WRAPPING_BURST_MODE=false,autoInitializationFileName=ULA_UFM_onchip_flash_0,initFlashContent=true,initializationFileName=D:/FPGA/Electron/AB/ROM/saa5050.hex,initializationFileNameForSim=D:/FPGA/Electron/AB/ROM/saa5050.hex,useNonDefaultInitFile=true)"
    instancePathKey="ULA_UFM"
    kind="ULA_UFM"
    version="1.0"
    name="ULA_UFM">
   <parameter name="AUTO_CLK_CLOCK_RATE" value="-1" />
-  <parameter name="AUTO_GENERATION_ID" value="1592423129" />
+  <parameter name="AUTO_GENERATION_ID" value="1593690891" />
   <parameter name="AUTO_DEVICE" value="10M08SCE144C8G" />
   <parameter name="AUTO_DEVICE_FAMILY" value="MAX 10" />
   <parameter name="AUTO_CLK_RESET_DOMAIN" value="-1" />
@@ -198,43 +140,32 @@
   <parameter name="AUTO_UNIQUE_ID" value="" />
   <parameter name="AUTO_DEVICE_SPEEDGRADE" value="8" />
   <generatedFiles>
-   <file
-       path="D:/FPGA/Electron/MAX 10 Board - Board Ver 1.02 with Mode 7 Support/ULA_UFM/synthesis/ULA_UFM.vhd"
-       type="VHDL" />
+   <file path="D:/FPGA/Electron/AB/ULA_UFM/synthesis/ULA_UFM.vhd" type="VHDL" />
   </generatedFiles>
   <childGeneratedFiles>
    <file
-       path="D:/FPGA/Electron/MAX 10 Board - Board Ver 1.02 with Mode 7 Support/ULA_UFM/synthesis/submodules/altera_onchip_flash_util.v"
+       path="D:/FPGA/Electron/AB/ULA_UFM/synthesis/submodules/altera_onchip_flash_util.v"
        type="VERILOG"
        attributes="" />
    <file
-       path="D:/FPGA/Electron/MAX 10 Board - Board Ver 1.02 with Mode 7 Support/ULA_UFM/synthesis/submodules/altera_onchip_flash.v"
+       path="D:/FPGA/Electron/AB/ULA_UFM/synthesis/submodules/altera_onchip_flash.v"
        type="VERILOG"
        attributes="" />
    <file
-       path="D:/FPGA/Electron/MAX 10 Board - Board Ver 1.02 with Mode 7 Support/ULA_UFM/synthesis/submodules/altera_onchip_flash_avmm_data_controller.v"
+       path="D:/FPGA/Electron/AB/ULA_UFM/synthesis/submodules/altera_onchip_flash_avmm_data_controller.v"
        type="VERILOG"
        attributes="" />
    <file
-       path="D:/FPGA/Electron/MAX 10 Board - Board Ver 1.02 with Mode 7 Support/ULA_UFM/synthesis/submodules/altera_onchip_flash_avmm_csr_controller.v"
-       type="VERILOG"
-       attributes="" />
-   <file
-       path="D:/FPGA/Electron/MAX 10 Board - Board Ver 1.02 with Mode 7 Support/ULA_UFM/synthesis/submodules/altera_onchip_flash.sdc"
-       type="SDC"
-       attributes="" />
-   <file
-       path="D:/FPGA/Electron/MAX 10 Board - Board Ver 1.02 with Mode 7 Support/ULA_UFM/synthesis/submodules/rtl/altera_onchip_flash_block.v"
+       path="D:/FPGA/Electron/AB/ULA_UFM/synthesis/submodules/rtl/altera_onchip_flash_block.v"
        type="VERILOG"
        attributes="" />
   </childGeneratedFiles>
   <sourceFiles>
-   <file
-       path="D:/FPGA/Electron/MAX 10 Board - Board Ver 1.02 with Mode 7 Support/ULA_UFM.qsys" />
+   <file path="D:/FPGA/Electron/AB/ULA_UFM.qsys" />
   </sourceFiles>
   <childSourceFiles>
    <file
-       path="D:/intelfpga/19.1/ip/altera/altera_onchip_flash/altera_onchip_flash/altera_onchip_flash_hw.tcl" />
+       path="D:/intelfpga-17.1/17.0/ip/altera/altera_onchip_flash/altera_onchip_flash/altera_onchip_flash_hw.tcl" />
   </childSourceFiles>
   <messages>
    <message level="Debug" culprit="ULA_UFM">queue size: 0 starting:ULA_UFM "ULA_UFM"</message>
@@ -258,38 +189,36 @@
  </entity>
  <entity
    path="submodules/"
-   parameterizationKey="altera_onchip_flash:19.1:ADDR_RANGE1_END_ADDR=8191,ADDR_RANGE1_OFFSET=512,ADDR_RANGE2_END_ADDR=8191,ADDR_RANGE2_OFFSET=0,ADDR_RANGE3_OFFSET=0,AUTO_CLOCK_RATE=0,AVMM_DATA_ADDR_WIDTH=13,AVMM_DATA_BURSTCOUNT_WIDTH=2,AVMM_DATA_DATA_WIDTH=32,CLOCK_FREQUENCY=112.0,CONFIGURATION_MODE=Single Uncompressed Image,CONFIGURATION_SCHEME=Internal Configuration,DATA_INTERFACE=Parallel,DEVICE_FAMILY=MAX 10,DEVICE_ID=08,FLASH_ADDR_ALIGNMENT_BITS=1,FLASH_BUSY_TIMEOUT_CYCLE_MAX_INDEX=134,FLASH_ERASE_TIMEOUT_CYCLE_MAX_INDEX=39200000,FLASH_READ_CYCLE_MAX_INDEX=4,FLASH_RESET_CYCLE_MAX_INDEX=27,FLASH_SEQ_READ_DATA_COUNT=2,FLASH_WRITE_TIMEOUT_CYCLE_MAX_INDEX=34160,INIT_FILENAME=D:/FPGA/Electron/MAX 10 Board - Board Ver 1.02 with Mode 7 Support/ROM/saa5050.hex,INIT_FILENAME_SIM=D:/FPGA/Electron/MAX 10 Board - Board Ver 1.02 with Mode 7 Support/ROM/saa5050.hex,IS_COMPRESSED_IMAGE=False,IS_DUAL_BOOT=False,IS_ERAM_SKIP=True,MAX_UFM_VALID_ADDR=8191,MAX_VALID_ADDR=8191,MIN_UFM_VALID_ADDR=0,MIN_VALID_ADDR=0,PARALLEL_MODE=true,PART_NAME=10M08SCE144C8G,READ_AND_WRITE_MODE=true,READ_BURST_COUNT=2,READ_BURST_MODE=Incrementing,SECTOR1_END_ADDR=4095,SECTOR1_MAP=1,SECTOR1_START_ADDR=0,SECTOR2_END_ADDR=8191,SECTOR2_MAP=2,SECTOR2_START_ADDR=4096,SECTOR3_END_ADDR=0,SECTOR3_MAP=0,SECTOR3_START_ADDR=0,SECTOR4_END_ADDR=0,SECTOR4_MAP=0,SECTOR4_START_ADDR=0,SECTOR5_END_ADDR=0,SECTOR5_MAP=0,SECTOR5_START_ADDR=0,SECTOR_ACCESS_MODE=Read and write,Read and write,Read only,Hidden,Hidden,SECTOR_ADDRESS_MAPPING=0x00000 - 0x03fff,0x04000 - 0x07fff,NA,NA,NA,SECTOR_ID=1,2,NA,NA,NA,SECTOR_READ_PROTECTION_MODE=28,SECTOR_STORAGE_TYPE=UFM,UFM,NA,CFM,CFM,WRAPPING_BURST_MODE=false,autoInitializationFileName=ULA_UFM_onchip_flash_0,initFlashContent=true,initializationFileName=D:/FPGA/Electron/MAX 10 Board - Board Ver 1.02 with Mode 7 Support/ROM/saa5050.hex,initializationFileNameForSim=D:/FPGA/Electron/MAX 10 Board - Board Ver 1.02 with Mode 7 Support/ROM/saa5050.hex,useNonDefaultInitFile=true"
+   parameterizationKey="altera_onchip_flash:17.0:ADDR_RANGE1_END_ADDR=8191,ADDR_RANGE1_OFFSET=512,ADDR_RANGE2_OFFSET=21504,AUTO_CLOCK_RATE=0,AVMM_DATA_ADDR_WIDTH=16,AVMM_DATA_BURSTCOUNT_WIDTH=2,AVMM_DATA_DATA_WIDTH=32,CLOCK_FREQUENCY=112.0,CONFIGURATION_MODE=Single Uncompressed Image,CONFIGURATION_SCHEME=Internal Configuration,DATA_INTERFACE=Parallel,DEVICE_FAMILY=MAX 10,DEVICE_ID=08,FLASH_ADDR_ALIGNMENT_BITS=1,FLASH_BUSY_TIMEOUT_CYCLE_MAX_INDEX=134,FLASH_ERASE_TIMEOUT_CYCLE_MAX_INDEX=39200000,FLASH_READ_CYCLE_MAX_INDEX=4,FLASH_RESET_CYCLE_MAX_INDEX=27,FLASH_SEQ_READ_DATA_COUNT=2,FLASH_WRITE_TIMEOUT_CYCLE_MAX_INDEX=34160,INIT_FILENAME=D:/FPGA/Electron/AB/ROM/saa5050.hex,INIT_FILENAME_SIM=D:/FPGA/Electron/AB/ROM/saa5050.hex,IS_COMPRESSED_IMAGE=False,IS_DUAL_BOOT=False,IS_ERAM_SKIP=True,MAX_UFM_VALID_ADDR=8191,MAX_VALID_ADDR=58879,MIN_UFM_VALID_ADDR=0,MIN_VALID_ADDR=0,PARALLEL_MODE=true,PART_NAME=10M08SCE144C8G,READ_AND_WRITE_MODE=false,READ_BURST_COUNT=2,READ_BURST_MODE=Incrementing,SECTOR1_END_ADDR=4095,SECTOR1_MAP=1,SECTOR1_START_ADDR=0,SECTOR2_END_ADDR=8191,SECTOR2_MAP=2,SECTOR2_START_ADDR=4096,SECTOR3_END_ADDR=23039,SECTOR3_MAP=4,SECTOR3_START_ADDR=8192,SECTOR4_END_ADDR=58879,SECTOR4_MAP=5,SECTOR4_START_ADDR=23040,SECTOR5_END_ADDR=0,SECTOR5_MAP=0,SECTOR5_START_ADDR=0,SECTOR_ACCESS_MODE=Read only,Read only,Read only,Read only,Read only,SECTOR_ADDRESS_MAPPING=0x00000 - 0x03fff,0x04000 - 0x07fff,NA,0x08000 - 0x167ff,0x16800 - 0x397ff,SECTOR_ID=1,2,NA,3,4,SECTOR_READ_PROTECTION_MODE=31,SECTOR_STORAGE_TYPE=UFM,UFM,NA,CFM,CFM,WRAPPING_BURST_MODE=false,autoInitializationFileName=ULA_UFM_onchip_flash_0,initFlashContent=true,initializationFileName=D:/FPGA/Electron/AB/ROM/saa5050.hex,initializationFileNameForSim=D:/FPGA/Electron/AB/ROM/saa5050.hex,useNonDefaultInitFile=true"
    instancePathKey="ULA_UFM:.:onchip_flash_0"
    kind="altera_onchip_flash"
-   version="19.1"
+   version="17.0"
    name="altera_onchip_flash">
-  <parameter name="SECTOR_READ_PROTECTION_MODE" value="28" />
+  <parameter name="SECTOR_READ_PROTECTION_MODE" value="31" />
   <parameter name="MIN_UFM_VALID_ADDR" value="0" />
-  <parameter name="AVMM_DATA_ADDR_WIDTH" value="13" />
-  <parameter name="SECTOR3_START_ADDR" value="0" />
+  <parameter name="AVMM_DATA_ADDR_WIDTH" value="16" />
+  <parameter name="SECTOR3_START_ADDR" value="8192" />
   <parameter name="AUTO_CLOCK_RATE" value="0" />
   <parameter name="FLASH_ERASE_TIMEOUT_CYCLE_MAX_INDEX" value="39200000" />
   <parameter name="SECTOR1_END_ADDR" value="4095" />
-  <parameter name="SECTOR4_END_ADDR" value="0" />
+  <parameter name="SECTOR4_END_ADDR" value="58879" />
   <parameter
      name="initializationFileNameForSim"
-     value="D:/FPGA/Electron/MAX 10 Board - Board Ver 1.02 with Mode 7 Support/ROM/saa5050.hex" />
-  <parameter name="MAX_VALID_ADDR" value="8191" />
+     value="D:/FPGA/Electron/AB/ROM/saa5050.hex" />
+  <parameter name="MAX_VALID_ADDR" value="58879" />
   <parameter name="DATA_INTERFACE" value="Parallel" />
   <parameter name="AVMM_DATA_DATA_WIDTH" value="32" />
   <parameter name="SECTOR1_MAP" value="1" />
-  <parameter
-     name="INIT_FILENAME_SIM"
-     value="D:/FPGA/Electron/MAX 10 Board - Board Ver 1.02 with Mode 7 Support/ROM/saa5050.hex" />
+  <parameter name="INIT_FILENAME_SIM" value="D:/FPGA/Electron/AB/ROM/saa5050.hex" />
   <parameter
      name="initializationFileName"
-     value="D:/FPGA/Electron/MAX 10 Board - Board Ver 1.02 with Mode 7 Support/ROM/saa5050.hex" />
+     value="D:/FPGA/Electron/AB/ROM/saa5050.hex" />
   <parameter name="MIN_VALID_ADDR" value="0" />
   <parameter name="useNonDefaultInitFile" value="true" />
   <parameter name="SECTOR2_MAP" value="2" />
-  <parameter name="SECTOR3_END_ADDR" value="0" />
+  <parameter name="SECTOR3_END_ADDR" value="23039" />
   <parameter name="CONFIGURATION_SCHEME" value="Internal Configuration" />
-  <parameter name="SECTOR3_MAP" value="0" />
+  <parameter name="SECTOR3_MAP" value="4" />
   <parameter name="DEVICE_ID" value="08" />
   <parameter name="WRAPPING_BURST_MODE" value="false" />
   <parameter name="SECTOR5_MAP" value="0" />
@@ -297,76 +226,64 @@
   <parameter name="FLASH_WRITE_TIMEOUT_CYCLE_MAX_INDEX" value="34160" />
   <parameter name="autoInitializationFileName" value="ULA_UFM_onchip_flash_0" />
   <parameter name="DEVICE_FAMILY" value="MAX 10" />
-  <parameter name="ADDR_RANGE3_OFFSET" value="0" />
-  <parameter name="ADDR_RANGE2_OFFSET" value="0" />
+  <parameter name="ADDR_RANGE2_OFFSET" value="21504" />
   <parameter name="SECTOR2_END_ADDR" value="8191" />
-  <parameter name="SECTOR4_MAP" value="0" />
+  <parameter name="SECTOR4_MAP" value="5" />
   <parameter name="FLASH_RESET_CYCLE_MAX_INDEX" value="27" />
   <parameter
      name="SECTOR_ADDRESS_MAPPING"
-     value="0x00000 - 0x03fff,0x04000 - 0x07fff,NA,NA,NA" />
+     value="0x00000 - 0x03fff,0x04000 - 0x07fff,NA,0x08000 - 0x167ff,0x16800 - 0x397ff" />
   <parameter name="IS_ERAM_SKIP" value="True" />
   <parameter name="READ_BURST_MODE" value="Incrementing" />
-  <parameter name="READ_AND_WRITE_MODE" value="true" />
+  <parameter name="READ_AND_WRITE_MODE" value="false" />
   <parameter name="FLASH_BUSY_TIMEOUT_CYCLE_MAX_INDEX" value="134" />
   <parameter name="SECTOR5_START_ADDR" value="0" />
   <parameter name="PART_NAME" value="10M08SCE144C8G" />
   <parameter name="ADDR_RANGE1_OFFSET" value="512" />
   <parameter name="MAX_UFM_VALID_ADDR" value="8191" />
-  <parameter
-     name="INIT_FILENAME"
-     value="D:/FPGA/Electron/MAX 10 Board - Board Ver 1.02 with Mode 7 Support/ROM/saa5050.hex" />
+  <parameter name="INIT_FILENAME" value="D:/FPGA/Electron/AB/ROM/saa5050.hex" />
   <parameter name="CONFIGURATION_MODE" value="Single Uncompressed Image" />
   <parameter name="PARALLEL_MODE" value="true" />
-  <parameter name="SECTOR4_START_ADDR" value="0" />
+  <parameter name="SECTOR4_START_ADDR" value="23040" />
   <parameter name="FLASH_ADDR_ALIGNMENT_BITS" value="1" />
   <parameter
      name="SECTOR_ACCESS_MODE"
-     value="Read and write,Read and write,Read only,Hidden,Hidden" />
+     value="Read only,Read only,Read only,Read only,Read only" />
   <parameter name="initFlashContent" value="true" />
   <parameter name="SECTOR1_START_ADDR" value="0" />
   <parameter name="ADDR_RANGE1_END_ADDR" value="8191" />
   <parameter name="IS_COMPRESSED_IMAGE" value="False" />
-  <parameter name="SECTOR_ID" value="1,2,NA,NA,NA" />
+  <parameter name="SECTOR_ID" value="1,2,NA,3,4" />
   <parameter name="READ_BURST_COUNT" value="2" />
   <parameter name="FLASH_READ_CYCLE_MAX_INDEX" value="4" />
   <parameter name="AVMM_DATA_BURSTCOUNT_WIDTH" value="2" />
   <parameter name="CLOCK_FREQUENCY" value="112.0" />
   <parameter name="SECTOR_STORAGE_TYPE" value="UFM,UFM,NA,CFM,CFM" />
-  <parameter name="ADDR_RANGE2_END_ADDR" value="8191" />
   <parameter name="SECTOR5_END_ADDR" value="0" />
   <parameter name="SECTOR2_START_ADDR" value="4096" />
   <parameter name="IS_DUAL_BOOT" value="False" />
   <generatedFiles>
    <file
-       path="D:/FPGA/Electron/MAX 10 Board - Board Ver 1.02 with Mode 7 Support/ULA_UFM/synthesis/submodules/altera_onchip_flash_util.v"
+       path="D:/FPGA/Electron/AB/ULA_UFM/synthesis/submodules/altera_onchip_flash_util.v"
        type="VERILOG"
        attributes="" />
    <file
-       path="D:/FPGA/Electron/MAX 10 Board - Board Ver 1.02 with Mode 7 Support/ULA_UFM/synthesis/submodules/altera_onchip_flash.v"
+       path="D:/FPGA/Electron/AB/ULA_UFM/synthesis/submodules/altera_onchip_flash.v"
        type="VERILOG"
        attributes="" />
    <file
-       path="D:/FPGA/Electron/MAX 10 Board - Board Ver 1.02 with Mode 7 Support/ULA_UFM/synthesis/submodules/altera_onchip_flash_avmm_data_controller.v"
+       path="D:/FPGA/Electron/AB/ULA_UFM/synthesis/submodules/altera_onchip_flash_avmm_data_controller.v"
        type="VERILOG"
        attributes="" />
    <file
-       path="D:/FPGA/Electron/MAX 10 Board - Board Ver 1.02 with Mode 7 Support/ULA_UFM/synthesis/submodules/altera_onchip_flash_avmm_csr_controller.v"
-       type="VERILOG"
-       attributes="" />
-   <file
-       path="D:/FPGA/Electron/MAX 10 Board - Board Ver 1.02 with Mode 7 Support/ULA_UFM/synthesis/submodules/altera_onchip_flash.sdc"
-       type="SDC"
-       attributes="" />
-   <file
-       path="D:/FPGA/Electron/MAX 10 Board - Board Ver 1.02 with Mode 7 Support/ULA_UFM/synthesis/submodules/rtl/altera_onchip_flash_block.v"
+       path="D:/FPGA/Electron/AB/ULA_UFM/synthesis/submodules/rtl/altera_onchip_flash_block.v"
        type="VERILOG"
        attributes="" />
   </generatedFiles>
   <childGeneratedFiles/>
   <sourceFiles>
    <file
-       path="D:/intelfpga/19.1/ip/altera/altera_onchip_flash/altera_onchip_flash/altera_onchip_flash_hw.tcl" />
+       path="D:/intelfpga-17.1/17.0/ip/altera/altera_onchip_flash/altera_onchip_flash/altera_onchip_flash_hw.tcl" />
   </sourceFiles>
   <childSourceFiles/>
   <instantiator instantiator="ULA_UFM" as="onchip_flash_0" />
