@@ -5,7 +5,7 @@ use ieee.numeric_std.all;
 
 entity ufmrom is
     port (
-		clock_112	: in  std_logic;
+		clock_72	: in  std_logic;
 		romaddress	: in  std_logic_vector(11 downto 0);
 		romdata		: out  std_logic_vector(7 downto 0);
 		romen			: in std_logic;
@@ -43,9 +43,9 @@ architecture behavioral of ufmrom is
 begin
 	
 	 -- Select correct byte from the 32 bit data read from the UFM
-	 process(clock_112)
+	 process(clock_72)
 	 begin
-		if rising_edge(clock_112) then
+		if rising_edge(clock_72) then
 			case state is
 				when start =>
 					flashen <= '0';
@@ -84,7 +84,7 @@ begin
 	 -- MOS   real address is xC000 / 4 = x3000 - x2000 = x1000 starting address in the UFM
 	 u0 : component ULA_UFM
         port map (
-            clock                   => clock_112,
+            clock                   => clock_72,
 				avmm_data_addr          => "000000" & romaddress(11 downto 2),
             avmm_data_read          => flashen,
             avmm_data_readdata      => romdata32,
