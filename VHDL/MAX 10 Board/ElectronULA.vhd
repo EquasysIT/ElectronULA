@@ -100,7 +100,7 @@ signal clock_16          : std_logic;
 signal clock_24          : std_logic;
 
 -- Clock for UFM on MAX10
-signal clock_112         : std_logic;							
+signal clock_72         : std_logic;							
 
 signal data_in           : std_logic_vector(7 downto 0);
 
@@ -139,7 +139,7 @@ begin
 		inclk0 => clk_in,
 		c0		=> clock_16,
 		c1		=> clock_24,
-		c2		=> clock_112
+		c2		=> clock_72
 	);
 	
 
@@ -150,10 +150,10 @@ begin
 	  init_charrom : process(clock_24)
 	  begin
 			if rising_edge(clock_24) then
-				if char_rom_addr /= 4095 then
+				if char_rom_addr < x"FFF" then
+					char_rom_data <= ufm_data;
 					if read_valid = '1' then
 						char_rom_addr <= char_rom_addr + 1;
-						char_rom_data <= ufm_data;
 					end if;
 					char_rom_we <= '1';
 				else
@@ -163,7 +163,7 @@ begin
 	  end process;
 	  
 	  ufmrom : entity work.ufmrom port map(
-		 clock_112 => clock_112,
+		 clock_72 => clock_72,
 		 romaddress => char_rom_addr,
 		 romdata => ufm_data,
 		 romen => '1',
