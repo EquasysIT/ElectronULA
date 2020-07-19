@@ -21,9 +21,6 @@ use ieee.numeric_std.all;
 -- Board Specific changes to support the ULA Replacement Board V1.02 - A Burgess
 
 
--- Remember to fix the UFM error on some versions of Quartus in altera_onchip_flash_avmm_data_controller.v, change the "assign flash" line.....
--- See https://www.intel.com/content/www/us/en/programmable/support/support-resources/knowledge-base/solutions/rd10162015_230.html
-
 entity ElectronULA is
     port (
         clk_in      : in  std_logic; -- 16Mhz clock direct from Electron Circuit Board
@@ -44,7 +41,7 @@ entity ElectronULA is
 		  
 		  -- Reset
 		  nRSTIN		  : in std_logic;
-		  nRSTOUT     : out  std_logic;
+		  nRSTOUT     : out  std_logic; 
 		  
         -- Video
         red           : out std_logic;
@@ -116,6 +113,7 @@ signal rom_latch         : std_logic_vector(3 downto 0);
 
 signal powerup_reset_n   : std_logic;
 signal reset_counter     : std_logic_vector (15 downto 0) := (others => '0');
+signal nRST					 : std_logic;
 
 signal turbo             : std_logic_vector(1 downto 0);
 
@@ -185,7 +183,7 @@ begin
         data_out  => ula_data,
         data_en   => ula_enable,
         R_W_n     => RnWIN,
-        RST_n     => nRSTIN,
+        RST_n     => nRST,
         IRQ_n     => ula_irq_n,
         NMI_n     => nNMI,
 		  
@@ -288,5 +286,6 @@ begin
 
     -- Reset is open collector to avoid contention when BREAK pressed
     nRSTOUT <= '0' when powerup_reset_n = '0' else 'Z';
+	 nRST <= '0' when powerup_reset_n = '0' or nRSTIN = '0' else '1';
 
 end behavioral;
