@@ -53,10 +53,10 @@ entity ElectronULACore is
         -- Keyboard
         kbd       : in  std_logic_vector(3 downto 0);  -- Async
 
-        -- Casette
+        -- Cassette
         casIn     : in  std_logic;
         casOut    : out std_logic;
-
+		  
         -- MISC
         caps      : out std_logic;
         motor     : out std_logic;
@@ -587,11 +587,11 @@ begin
                             ctrl_caps <= '0';
                         end if;
                     end if;
-                    -- Detect "1" being pressed: RGB non-interlaced (default)
+                    -- Detect "1" being pressed: RGB non-interlaced
                     if (addr = x"afff" and page_enable = '1' and page(2 downto 1) = "00" and ctrl_caps = '1' and kbd(0) = '0') then
                         mode <= "00";
                     end if;
-                    -- Detect "2" being pressed: RGB interlaced
+                    -- Detect "2" being pressed: RGB interlaced (default)
                     if (addr = x"b7ff" and page_enable = '1' and page(2 downto 1) = "00" and ctrl_caps = '1' and kbd(0) = '0') then
                         mode <= "01";
                     end if;
@@ -772,9 +772,9 @@ begin
             end if;
 
             -- Char_row counts 0..7 or 0..9 depending on the mode.
-            -- It incremented on the falling edge of hsync
+            -- It incremented on the trailing edge of hsync
             hsync_int_last <= hsync_int;
-            if hsync_int = '0' and hsync_int_last = '1'  then
+            if hsync_int = '1' and hsync_int_last = '0'  then
                 if v_count = v_total then
                     char_row <= (others => '0');
                 elsif v_count(0) = '1' or mode(1) = '0' then
@@ -784,6 +784,12 @@ begin
                         char_row <= char_row + 1;
                     end if;
                 end if;
+            elsif mode_text = '0' then
+                -- From the ULA schematics sheet 7, VA3 is a T-type Latch
+                -- with an additional reset input connected to GMODE, so it's
+                -- immediately forced to zero in a graphics mode. This is
+                -- needed for 0xC0DE's Vertical Rupture demo to work. Only works correctly in interlaced mode
+                char_row(3) <= '0';
             end if;
 
             -- Determine last line of a row
@@ -805,7 +811,7 @@ begin
 
             -- At the start of hsync,  update the row_addr from byte_addr which
             -- gets to the start of the next block
-            if hsync_int = '0' and hsync_int_last = '1' and last_line = '1' then
+            if hsync_int = '0' and last_line = '1' then
                 row_addr := byte_addr(14 downto 6);
             end if;
 
@@ -1158,7 +1164,7 @@ begin
     end process;
 
     cpu_clk_out    <= cpu_clk;
-
+	 
     IRQ_n <= ula_irq_n;
 
 --------------------------------------------------------
