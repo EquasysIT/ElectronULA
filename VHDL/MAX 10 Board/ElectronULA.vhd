@@ -19,7 +19,19 @@ use ieee.std_logic_unsigned.all;
 use ieee.numeric_std.all;
 
 -- Board Specific changes to support the ULA Replacement Board V1.02 - A Burgess
+--
+-- Switch Off = 1, On = 0 as per physical switch legend
+-- Switch default 1=off, 2=off, 3=on, 4=off
+-- Switch 1 - On None Interlaced, Off Interlaced
+-- Switch 2 - CPU Speed
+-- Switch 3 - CPU Speed
+--
+-- 			  00 - 1Mhz No Memory Contention
+-- 			  01 - 1Mhz/2Mhz Memory Contention in modes 0-3 (Real Electron)
+-- 			  10 - 2Mhz No Memory Contention
+-- 			  11 - 4Mhz No Memory Contention
 
+-- Switch 4 - Spare
 
 entity ElectronULA is
     port (
@@ -64,6 +76,9 @@ entity ElectronULA is
         casIn         : in  std_logic;
         casOut        : out std_logic;
         casMO         : out std_logic;
+		  
+		  -- Switches
+        swc				 : in  std_logic_vector(3 downto 0);
 
 		  -- Buffer Control
 		  
@@ -97,7 +112,7 @@ signal clock_16          : std_logic;
 signal clock_24          : std_logic;
 
 -- Clock for UFM on MAX10
-signal clock_72         : std_logic;							
+signal clock_72          : std_logic;							
 
 signal data_in           : std_logic_vector(7 downto 0);
 
@@ -213,10 +228,11 @@ begin
 
         rom_latch => rom_latch,
 
-        mode_init => "00",
-
+        mode_init => '0' & swc(0), -- 00 = None interlaced, 01 = Interlaced Video
+		  
         -- Clock Generation
 		  cpu_clk_out	  => cpu_clk_out,
+		  swc				  => swc,
         turbo          => turbo,
         turbo_out      => turbo,
 		  

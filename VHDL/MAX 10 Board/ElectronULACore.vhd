@@ -20,7 +20,7 @@ use ieee.numeric_std.all;
 
 entity ElectronULACore is
     generic (
-        LimitROMSpeed    : boolean := false;   -- true to limit ROM speed to 2MHz
+        LimitROMSpeed    : boolean := false;   -- true to limit ROM speed to 2MHz -- If true this breaks MMFS on the AP5
         LimitIOSpeed     : boolean := true   -- true to limit IO speed to 1MHz
     );
     port (
@@ -64,9 +64,12 @@ entity ElectronULACore is
         rom_latch : out std_logic_vector(3 downto 0);
 
         mode_init : in std_logic_vector(1 downto 0);
+		  
+		  
 
         -- Clock Generation
         cpu_clk_out    : out std_logic;
+		  swc				  : in std_logic_vector(3 downto 0);
         turbo          : in std_logic_vector(1 downto 0);
         turbo_out      : out std_logic_vector(1 downto 0) := "01";
 
@@ -174,8 +177,9 @@ architecture behavioral of ElectronULACore is
   signal caps_int       : std_logic;
   signal motor_int      : std_logic;
 
-  -- Supports changing the jumpers
+  -- Supports changing the switches
   signal mode_init_copy : std_logic_vector(1 downto 0);
+  signal turbo_out_copy : std_logic_vector(1 downto 0) := "01";
 
   -- Tape Interface
   signal cintone        : std_logic;
@@ -416,11 +420,16 @@ begin
                cintone         <= '0';
 
             else
-                -- Detect Jumpers being changed
+                -- Detect switches being changed
                 if (mode_init_copy /= mode_init) then
                     mode <= mode_init;
                     mode_init_copy <= mode_init;
                 end if;
+                if (turbo_out_copy /= swc(2 downto 1)) then
+                    turbo_out <= swc(2 downto 1);
+                    turbo_out_copy <= swc(2 downto 1);
+                end if;
+
                 -- Synchronize the display interrupt signal from the VGA clock domain
                 display_intr1 <= display_intr;
                 display_intr2 <= display_intr1;
