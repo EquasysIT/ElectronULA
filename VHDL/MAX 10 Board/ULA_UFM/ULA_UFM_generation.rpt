@@ -1,6 +1,6 @@
 Info: Starting: Create block symbol file (.bsf)
-Info: qsys-generate D:\FPGA\Electron\AB\ULA_UFM.qsys --block-symbol-file --output-directory=D:\FPGA\Electron\AB\ULA_UFM --family="MAX 10" --part=10M08SCE144C8G
-Progress: Loading AB/ULA_UFM.qsys
+Info: qsys-generate "D:\FPGA\Electron\MAX 10 Board - Board Ver 1.04 with Mode 7 Support - Most functional and stable version - ROMS and SD Card\ULA_UFM.qsys" --block-symbol-file --output-directory="D:\FPGA\Electron\MAX 10 Board - Board Ver 1.04 with Mode 7 Support - Most functional and stable version - ROMS and SD Card\ULA_UFM" --family="MAX 10" --part=10M08SCE144C8G
+Progress: Loading MAX 10 Board - Board Ver 1.04 with Mode 7 Support - Most functional and stable version - ROMS and SD Card/ULA_UFM.qsys
 Progress: Reading input file
 Progress: Adding onchip_flash_0 [altera_onchip_flash 17.0]
 Progress: Parameterizing module onchip_flash_0
@@ -12,8 +12,8 @@ Info: qsys-generate succeeded.
 Info: Finished: Create block symbol file (.bsf)
 Info: 
 Info: Starting: Create HDL design files for synthesis
-Info: qsys-generate D:\FPGA\Electron\AB\ULA_UFM.qsys --synthesis=VHDL --output-directory=D:\FPGA\Electron\AB\ULA_UFM\synthesis --family="MAX 10" --part=10M08SCE144C8G
-Progress: Loading AB/ULA_UFM.qsys
+Info: qsys-generate "D:\FPGA\Electron\MAX 10 Board - Board Ver 1.04 with Mode 7 Support - Most functional and stable version - ROMS and SD Card\ULA_UFM.qsys" --synthesis=VHDL --output-directory="D:\FPGA\Electron\MAX 10 Board - Board Ver 1.04 with Mode 7 Support - Most functional and stable version - ROMS and SD Card\ULA_UFM\synthesis" --family="MAX 10" --part=10M08SCE144C8G
+Progress: Loading MAX 10 Board - Board Ver 1.04 with Mode 7 Support - Most functional and stable version - ROMS and SD Card/ULA_UFM.qsys
 Progress: Reading input file
 Progress: Adding onchip_flash_0 [altera_onchip_flash 17.0]
 Progress: Parameterizing module onchip_flash_0

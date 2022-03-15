@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <EnsembleReport name="ULA_UFM" kind="system" version="17.0" fabric="QSYS">
  <!-- Format version 17.0 595 (Future versions may contain additional information.) -->
- <!-- 2020.07.02.12:54:54 -->
+ <!-- 2021.12.22.20:48:38 -->
  <!-- A collection of modules and connections -->
  <parameter name="clockCrossingAdapter">
   <type>com.altera.sopcmodel.ensemble.EClockAdapter</type>
@@ -53,7 +53,7 @@
  </parameter>
  <parameter name="generationId">
   <type>int</type>
-  <value>1593690891</value>
+  <value>1640206116</value>
   <derived>false</derived>
   <enabled>true</enabled>
   <visible>true</visible>
@@ -260,7 +260,7 @@ the requested settings for a module instance. -->
   </assignment>
   <assignment>
    <name>embeddedsw.memoryInfo.MEM_INIT_FILENAME</name>
-   <value>saa5050</value>
+   <value>PLUS1_EMMFS_JAFFA_SAA5050</value>
   </assignment>
   <assignment>
    <name>embeddedsw.memoryInfo.USE_BYTE_ADDRESSING_FOR_HEX</name>
@@ -316,7 +316,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="CONFIGURATION_MODE">
    <type>java.lang.String</type>
-   <value>Single Uncompressed Image</value>
+   <value>Single Compressed Image</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -348,7 +348,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="SECTOR_STORAGE_TYPE">
    <type>[Ljava.lang.String;</type>
-   <value>UFM,UFM,NA,CFM,CFM</value>
+   <value>UFM,UFM,NA,UFM,CFM</value>
    <derived>true</derived>
    <enabled>false</enabled>
    <visible>true</visible>
@@ -372,7 +372,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="initializationFileName">
    <type>java.lang.String</type>
-   <value>D:/FPGA/Electron/AB/ROM/saa5050.hex</value>
+   <value>D:/FPGA/Electron/MAX 10 Board - Board Ver 1.04 with Mode 7 Support - Most functional and stable version - ROMS and SD Card/ROM/PLUS1_EMMFS_JAFFA_SAA5050.HEX</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -380,7 +380,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="initializationFileNameForSim">
    <type>java.lang.String</type>
-   <value>D:/FPGA/Electron/AB/ROM/saa5050.hex</value>
+   <value>D:/FPGA/Electron/MAX 10 Board - Board Ver 1.04 with Mode 7 Support - Most functional and stable version - ROMS and SD Card/ROM/PLUS1_EMMFS_JAFFA_SAA5050.HEX</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -397,7 +397,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="INIT_FILENAME">
    <type>java.lang.String</type>
-   <value>D:/FPGA/Electron/AB/ROM/saa5050.hex</value>
+   <value>D:/FPGA/Electron/MAX 10 Board - Board Ver 1.04 with Mode 7 Support - Most functional and stable version - ROMS and SD Card/ROM/PLUS1_EMMFS_JAFFA_SAA5050.HEX</value>
    <derived>true</derived>
    <enabled>false</enabled>
    <visible>false</visible>
@@ -405,7 +405,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="INIT_FILENAME_SIM">
    <type>java.lang.String</type>
-   <value>D:/FPGA/Electron/AB/ROM/saa5050.hex</value>
+   <value>D:/FPGA/Electron/MAX 10 Board - Board Ver 1.04 with Mode 7 Support - Most functional and stable version - ROMS and SD Card/ROM/PLUS1_EMMFS_JAFFA_SAA5050.HEX</value>
    <derived>true</derived>
    <enabled>false</enabled>
    <visible>false</visible>
@@ -553,7 +553,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="MAX_UFM_VALID_ADDR">
    <type>int</type>
-   <value>8191</value>
+   <value>23039</value>
    <derived>true</derived>
    <enabled>true</enabled>
    <visible>false</visible>
@@ -753,7 +753,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="IS_COMPRESSED_IMAGE">
    <type>java.lang.String</type>
-   <value>False</value>
+   <value>True</value>
    <derived>true</derived>
    <enabled>true</enabled>
    <visible>false</visible>
@@ -1286,5 +1286,5 @@ parameters are a RESULT of the module parameters. -->
   <version>17.0</version>
  </plugin>
  <reportVersion>17.0 595</reportVersion>
- <uniqueIdentifier>00110A63A494000001730F612C4B</uniqueIdentifier>
+ <uniqueIdentifier>50E549403E370000017DE3E729C1</uniqueIdentifier>
 </EnsembleReport>

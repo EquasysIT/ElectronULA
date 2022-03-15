@@ -13,12 +13,9 @@
 --
 --Design Name: ElectronUla
 
-library ieee;
-use ieee.std_logic_1164.all;
-use ieee.std_logic_unsigned.all;
-use ieee.numeric_std.all;
-
--- Board Specific changes to support the ULA Replacement Board V1.02 - A Burgess
+-- 20/12/2021
+-- Board Specific changes to support the ULA Replacement Board V1.04 - A Burgess
+-- Board version 1.04 includes an SD card and supports MMFS
 --
 -- Switch Off = 1, On = 0 as per physical switch legend
 -- Switch default 1=off, 2=off, 3=on, 4=off
@@ -32,6 +29,11 @@ use ieee.numeric_std.all;
 -- 			  11 - 4Mhz No Memory Contention
 
 -- Switch 4 - Spare
+
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.std_logic_unsigned.all;
+use ieee.numeric_std.all;
 
 entity ElectronULA is
     port (
@@ -72,6 +74,12 @@ entity ElectronULA is
         kbd           : in  std_logic_vector(3 downto 0);
         caps          : out std_logic;
         
+		  -- SD Card
+        SDMISO    : in  std_logic;
+        SDSS      : out std_logic;
+        SDCLK     : out std_logic;
+        SDMOSI    : out std_logic;
+
         -- Cassette
         casIn         : in  std_logic;
         casOut        : out std_logic;
@@ -127,23 +135,14 @@ signal video_vsync       : std_logic;
 signal rom_latch         : std_logic_vector(3 downto 0);
 
 signal powerup_reset_n   : std_logic;
-signal reset_counter     : std_logic_vector (15 downto 0) := (others => '0');
+signal reset_counter     : std_logic_vector (16 downto 0) := (others => '0');
 signal nRST					 : std_logic;
 
 signal turbo             : std_logic_vector(1 downto 0);
 
 signal caps_led          : std_logic;
 signal cpu_clk_out       : std_logic;
-
--- SAA5050 Character ROM signals
-signal char_rom_we       : std_logic := '0';
-signal char_rom_addr     : std_logic_vector(11 downto 0) := (others => '0');
-signal char_rom_data     : std_logic_vector(7 downto 0) := (others => '0');
-
--- UFM
-signal read_requested	 : std_logic;
-signal read_valid			 : std_logic;
-signal ufm_data			 : std_logic_vector(7 downto 0);
+signal cpu_clken_out     : std_logic;
 
 begin
 
@@ -155,42 +154,12 @@ begin
 		c2		=> clock_72
 	);
 	
-
---------------------------------------------------------
--- Initalise SAA5050 Character ROM
---------------------------------------------------------
-
-	  init_charrom : process(clock_24)
-	  begin
-			if rising_edge(clock_24) then
-				if char_rom_addr < x"FFF" then
-					char_rom_data <= ufm_data;
-					if read_valid = '1' then
-						char_rom_addr <= char_rom_addr + 1;
-					end if;
-					char_rom_we <= '1';
-				else
-					char_rom_we <= '0';
-				end if;
-			end if;
-	  end process;
-	  
-	  ufmrom : entity work.ufmrom port map(
-		 clock_72 => clock_72,
-		 romaddress => char_rom_addr,
-		 romdata => ufm_data,
-		 romen => '1',
-		 reset_n => '1',
-		 read_requested => read_requested,
-		 read_valid => read_valid
-     );
-
-	 
 	 
     ula : entity work.ElectronULACore
 	 port map (
         clk_16M00 => clock_16,
 		  clk_24M00 => clock_24,
+		  clk_72M00 => clock_72,
 
         -- CPU Interface
         addr      => addr,
@@ -211,7 +180,7 @@ begin
 		  
 		  -- ROM
 		  ROM_n		=> ROM_n,
-
+		  
         -- Audio
         sound     => sound,
 
@@ -221,6 +190,12 @@ begin
 
         -- Keyboard
         kbd       => kbd,
+		  
+		  -- SD Card
+        SDMISO		=> SDMISO,
+        SDSS		=> SDSS,
+        SDCLK		=> SDCLK,
+        SDMOSI		=> SDMOSI,
 
         -- MISC
         caps      => caps_led,
@@ -231,15 +206,12 @@ begin
         mode_init => '0' & swc(0), -- 00 = None interlaced, 01 = Interlaced Video
 		  
         -- Clock Generation
-		  cpu_clk_out	  => cpu_clk_out,
+		  cpu_clk_out	  => cpu_clk_out, -- Used for external CPU clock
+		  cpu_clken_out  => cpu_clken_out, -- Used for internal CPU clock
+
 		  swc				  => swc,
         turbo          => turbo,
-        turbo_out      => turbo,
-		  
-		  char_rom_we	  => char_rom_we,
-        char_rom_addr  => char_rom_addr,	
-        char_rom_data  => char_rom_data
-
+        turbo_out      => turbo
     );
 
     red   <= video_red(3);
@@ -258,7 +230,7 @@ begin
 		"ZZZZZZZZ";
 	
 	 clk_out <= cpu_clk_out;
-	 
+	  
 --------------------------------------------------------
 -- Buffer Control
 --------------------------------------------------------
@@ -303,5 +275,6 @@ begin
     -- Reset is open collector to avoid contention when BREAK pressed
     nRSTOUT <= '0' when powerup_reset_n = '0' else 'Z';
 	 nRST <= '0' when powerup_reset_n = '0' or nRSTIN = '0' else '1';
+	 
 
 end behavioral;

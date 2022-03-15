@@ -13,6 +13,10 @@
 --
 --Design Name: ElectronULACore
 
+-- 20/12/2021
+-- Board Specific changes to support the ULA Replacement Board V1.04 - A Burgess
+-- Board version 1.04 includes an SD card and supports MMFS
+
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.std_logic_unsigned.all;
@@ -26,6 +30,7 @@ entity ElectronULACore is
     port (
         clk_16M00 : in  std_logic;
         clk_24M00 : in  std_logic := '0';
+		  clk_72M00 : in  std_logic;
 
         -- CPU Interface
         addr      : in  std_logic_vector(15 downto 0);
@@ -52,6 +57,12 @@ entity ElectronULACore is
 
         -- Keyboard
         kbd       : in  std_logic_vector(3 downto 0);  -- Async
+		  
+		  -- SD Card
+        SDMISO    : in  std_logic;
+        SDSS      : out std_logic;
+        SDCLK     : out std_logic;
+        SDMOSI    : out std_logic;
 
         -- Cassette
         casIn     : in  std_logic;
@@ -69,15 +80,11 @@ entity ElectronULACore is
 
         -- Clock Generation
         cpu_clk_out    : out std_logic;
+		  cpu_clken_out  : out std_logic;
+		  
 		  swc				  : in std_logic_vector(3 downto 0);
         turbo          : in std_logic_vector(1 downto 0);
-        turbo_out      : out std_logic_vector(1 downto 0) := "01";
-
-        -- SAA5050 character ROM loading
-        char_rom_we   : in std_logic := '0';
-        char_rom_addr : in std_logic_vector(11 downto 0) := (others => '0');
-        char_rom_data : in std_logic_vector(7 downto 0) := (others => '0')
-
+        turbo_out      : out std_logic_vector(1 downto 0) := "01"
         );
 end;
 
@@ -87,9 +94,8 @@ architecture behavioral of ElectronULACore is
   signal hsync_int_last : std_logic;
   signal vsync_int      : std_logic;
 
-  signal ram_addr_wr    : std_logic_vector(15 downto 0);
-  signal ram_addr       : std_logic_vector(15 downto 0);
   signal ram_we         : std_logic;
+  signal ram_n          : std_logic;
   signal ram_data       : std_logic_vector(7 downto 0);
   
   signal master_irq     : std_logic;
@@ -238,11 +244,48 @@ architecture behavioral of ElectronULACore is
   signal clk_16M00_a    :   std_logic;
   signal clk_16M00_b    :   std_logic;
   signal clk_16M00_c    :   std_logic;
+  
+  -- ROMS
+  signal ROM_n_int      :   std_logic;
+  signal PLS1ROM_n	   :   std_logic;
+  signal PLS1ROM_data   :	 std_logic_vector(7 downto 0);
+  
 
   -- clock enable generation
   signal clken_counter  : std_logic_vector (3 downto 0) := (others => '0');
   signal turbo_sync     : std_logic_vector (1 downto 0);
 
+  
+  
+  -- 6522 Signals
+  
+  signal via1_clken     : std_logic;
+  signal via1_clken_1   : std_logic;
+  signal via1_clken_2   : std_logic;
+  signal via1_clken_4   : std_logic;
+  signal via4_clken	   : std_logic;
+  signal via4_clken_1   : std_logic;
+  signal via4_clken_2   : std_logic;
+  signal via4_clken_4   : std_logic;
+
+  signal mc6522_enable     : std_logic;
+  signal mc6522_data       : std_logic_vector(7 downto 0);
+  signal mc6522_data_r     : std_logic_vector(7 downto 0);
+  signal mc6522_irq_n      : std_logic;
+  -- Port A is not really used, so signals directly loop back out to in
+  signal mc6522_ca2        : std_logic;
+  signal mc6522_porta      : std_logic_vector(7 downto 0);
+  -- Port B is used for the MMBEEB style SDCard Interface
+  signal mc6522_cb1_in     : std_logic;
+  signal mc6522_cb1_out    : std_logic;
+  signal mc6522_cb1_oe_l   : std_logic;
+  signal mc6522_cb2_in     : std_logic;
+  signal mc6522_portb_in   : std_logic_vector(7 downto 0);
+  signal mc6522_portb_out  : std_logic_vector(7 downto 0);
+  signal mc6522_portb_oe_l : std_logic_vector(7 downto 0);
+  signal sdclk_int         : std_logic;
+  
+  
   signal contention     : std_logic;
   signal contention1    : std_logic;
   signal contention2    : std_logic;
@@ -258,10 +301,18 @@ architecture behavioral of ElectronULACore is
   signal cpu_clk        : std_logic := '1';
   signal clk_counter    : std_logic_vector(2 downto 0) := (others => '0');
 
-  signal ula_irq_n         : std_logic;
-    
-  signal read_requested    : std_logic := '0';
-  signal read_valid        : std_logic := '0';
+  signal ula_irq_n      : std_logic;
+      
+  -- UFM
+  signal read_requested	 : std_logic	:= '0';
+  signal read_valid		 : std_logic	:= '0';
+  signal ufm_data			 : std_logic_vector(7 downto 0);
+  signal ufm_addr			 : std_logic_vector(15 downto 0);
+  
+  -- SAA5050 Character ROM signals
+  signal char_rom_we       : std_logic := '0';
+  signal char_rom_addr     : std_logic_vector(11 downto 0) := (others => '0');
+  signal char_rom_data     : std_logic_vector(7 downto 0) := (others => '0');
   
 
 -- Helper function to cast an std_logic value to an integer
@@ -319,61 +370,100 @@ begin
     v_disp_txt   <= std_logic_vector(to_unsigned(249, 10));
 
     v_rtc        <= std_logic_vector(to_unsigned( 99, 10));
+	 
+	
+	 -- MAX 10 UFM contains the Plus 1 AP6 ROM, MMFS 1.44 ROM and the Mode 7 OS 1.91 ROM
+	 ufmrom : entity work.ufmrom port map(
+		clock_72 => clk_72M00,
+		romaddress => ufm_addr,
+		romdata => ufm_data,
+		romen => '1',
+		reset_n => '1',
+		read_requested => read_requested,
+		read_valid => read_valid
+    );
+	 
+	 
+	-- Initialise SAA5050 Character ROM from the UFM - ROM sits in the SAA5050
+	init_charrom : process(clk_24M00)
+		begin
+			if rising_edge(clk_24M00) then
+				if char_rom_addr < x"FFF" then
+					char_rom_data <= ufm_data;
+					if read_valid = '1' then
+						char_rom_addr <= char_rom_addr + 1;
+					end if;
+					char_rom_we <= '1';
+				else
+					char_rom_we <= '0';
+				end if;
+			end if;
+	end process;
+	
+	-- Char ROM address if still initalising SAA5050 ROM otherwise read Plus 1 ROMs	
+	PLS1ROM_data <= ufm_data when char_rom_addr >= x"FFF" else x"FF";
+	ufm_addr <= ( page(1 downto 0) & addr(13 downto 0) ) when char_rom_addr >= x"FFF" else ( "0000" & char_rom_addr );
+	 
 
-    -- All of main memory (0x0000-0x7fff) is dual port RAM in the ULA
-        ram_32k : entity work.RAM_32K_DualPort port map(
-            -- Port A is the 6502 port
-            clka  => clk_16M00,
-            wea   => ram_we,
-            addra => ram_addr(14 downto 0),
-            dina  => ram_data_in_sync,
-            douta => ram_data,
-            -- Port B is the VGA Port
-            clkb  => clk_video,
-            web   => '0',
-            addrb => screen_addr,
-            dinb  => x"00",
-            doutb => screen_data
-            );
-				
-    -- Synchronize wea and dina
-    synchronize_wea_and_dina : process(clk_16M00)
-    begin
-      if rising_edge(clk_16M00) then
-        ram_we <= '0';
-        if addr(15) = '0' and R_W_n = '0' and cpu_clken = '1' then
-          ram_we <= '1';
-          ram_data_in_sync <= data_in;
-        end if;
-      end if;
-    end process;
-    -- For reads, we need to minimize latency (esp with an external 4MHz CPU)
-    -- For writes, we use the address captured on the rising edge of clk
-    ram_addr <= ram_addr_wr when ram_we = '1' else addr;
+   -- All of main memory (0x0000-0x7fff) is dual port RAM in the ULA
+   ram_32k : entity work.RAM_32K_DualPort port map(
+		-- Port A is the 6502 port
+		clka  => clk_16M00,
+		wea   => ram_we,
+		addra => addr(14 downto 0),
+		dina  => data_in,
+		douta => ram_data,
+		-- Port B is the VGA Port
+		clkb  => clk_video,
+		web   => '0',
+		addrb => screen_addr,
+		dinb  => x"00",
+		doutb => screen_data
+   );
+	ram_we <= '1' when addr(15) = '0' and R_W_n = '0' and cpu_clken = '1' else '0';
+	ram_n <= addr(15);
 
-    sound <= sound_bit;
+   sound <= sound_bit;
+
+
+------------------------------
+--									 --
+--			PAGED ROMS			 --
+--									 --
+------------------------------
+
  	 
     -- The external ROM is enabled:
-    -- - When the address is C000-FBFF and FF00-FFFF (i.e. OS Rom)
-    -- - When the address is 8000-BFFF and the ROM 10 or 11 is paged in (101x)
-    ROM_n <= '0' when addr(15 downto 14) = "11" and io_access = '0' else
-             '0' when addr(15 downto 14) = "10" and page_enable = '1' and page(2 downto 1) = "01" else
+    -- - When the address is C000-FBFF and FF00-FFFF
+    -- - When the address is 8000-BFFF and the ROM 10 or 11 is paged in
+    ROM_n_int <= '0' when addr(15 downto 14) = "11" and io_access = '0' else -- MOS ROM
+             '0' when addr(15 downto 14) = "10" and page_enable = '1' and page(2 downto 1) = "01" else -- BASIC ROM
              '1';
 
+	 -- Select Paged ROM when address is 8000-BFFF and the ROM 0-7 or 12-15 is paged in
+	 PLS1ROM_n <= '0' when addr(15 downto 14) = "10" and page_enable = '1' and page(2 downto 1) /= "00" and page(2 downto 1) /= "01" else '1';
+				 
+	 ROM_n <= ROM_n_int;
+				 
+
     -- ULA Reads + RAM Reads + KBD Reads
-    data_out <= ram_data                  when addr(15) = '0' else
+    data_out <= PLS1ROM_data              when PLS1ROM_n = '0' else
+					 ram_data                  when ram_n = '0' else
                 "0000" & (kbd xor "1111") when kbd_access = '1' else
                 isr_data                  when addr(15 downto 8) = x"FE" and addr(3 downto 0) = x"0" else
                 data_shift                when addr(15 downto 8) = x"FE" and addr(3 downto 0) = x"4" else
                 crtc_do                   when crtc_enable = '1' else
                 status_do                 when status_enable = '1' else
+					 mc6522_data_r             when mc6522_enable = '1' else																	  
                 x"F1"; -- todo FIXEME
 
-    data_en  <= '1'                       when addr(15) = '0' else
+    data_en  <= '1'                       when PLS1ROM_n = '0' else
+					 '1'                       when ram_n = '0' else
                 '1'                       when kbd_access = '1' else
                 '1'                       when addr(15 downto 8) = x"FE" else
                 '1'                       when crtc_enable = '1' else
                 '1'                       when status_enable = '1' else
+					 '1'                       when mc6522_enable = '1' else
                 '0';
 
     -- Register FEx0 is the Interrupt Status Register (Read Only)
@@ -1149,33 +1239,113 @@ begin
                     end if;
                 when others =>
             end case;
+				
+	 -- Generate clock enables for VIA one cycle before cpu_clken
+    if turbo_sync(1) = '0' or LimitIOSpeed then
+		-- 1MHz
+      via1_clken <= clken_counter(3) and clken_counter(2) and clken_counter(1) and not clken_counter(0);
+      via4_clken <=                                           clken_counter(1) and not clken_counter(0);
+    elsif turbo_sync(0) = '0' then
+		-- 2MHz
+      via1_clken <= clken_counter(2) and clken_counter(1) and not clken_counter(0);
+      via4_clken <=                                           not clken_counter(0);
+    else
+		-- 4MHz
+      via1_clken <= clken_counter(1) and not clken_counter(0);
+      via4_clken <= '1';
+    end if;
+			
 
-             -- Generate cpu_clk
-            if cpu_clken = '1' then
-                if turbo_sync = "11" then
-                    -- 4MHz clock; produce a 125 ns low pulse
-                    clk_counter <= "011";
-                else
-                    -- 1MHz or 2MHz clock; produce a 250 ns low pulse
-                    clk_counter <= "001";
-                end if;
-                cpu_clk <= '0';
-            elsif clk_counter(2) = '0' then
-                clk_counter <= clk_counter + 1;
-            else
-                -- Update addr for synchronous ram on rising clk_out edge
-                if cpu_clk = '0' then
-                    ram_addr_wr <= addr;
-                end if;
-                cpu_clk <= '1';
-            end if;
-        end if;
-    end process;
+    -- Generate cpu_clk
+    if cpu_clken = '1' then
+		if turbo_sync = "11" then
+			-- 4MHz clock; produce a 125 ns low pulse
+         clk_counter <= "011";
+      else
+      -- 1MHz or 2MHz clock; produce a 250 ns low pulse
+			clk_counter <= "001";
+      end if;
+			cpu_clk <= '0';
+			elsif clk_counter(2) = '0' then
+				clk_counter <= clk_counter + 1;
+         else
+				cpu_clk <= '1';
+         end if;
+		end if;
+	 end process;
 
     cpu_clk_out    <= cpu_clk;
-	 
-    IRQ_n <= ula_irq_n;
+	 cpu_clken_out  <= cpu_clken;
 
+	 
+--------------------------------------------------------
+-- MMC Filing System
+--------------------------------------------------------
+
+        mc6522_enable  <= '1' when addr(15 downto 4) = x"fcb" else '0';
+
+        via : entity work.M6522 port map(
+            I_RS       => addr(3 downto 0),
+            I_DATA     => data_in(7 downto 0),
+            O_DATA     => mc6522_data(7 downto 0),
+            I_RW_L     => R_W_n,
+            I_CS1      => mc6522_enable,
+            I_CS2_L    => '0',
+            O_IRQ_L    => mc6522_irq_n,
+            I_CA1      => '0',
+            I_CA2      => mc6522_ca2,
+            O_CA2      => mc6522_ca2,
+            O_CA2_OE_L => open,
+            I_PA       => mc6522_porta,
+            O_PA       => mc6522_porta,
+            O_PA_OE_L  => open,
+            I_CB1      => mc6522_cb1_in,
+            O_CB1      => mc6522_cb1_out,
+            O_CB1_OE_L => mc6522_cb1_oe_l,
+            I_CB2      => mc6522_cb2_in,
+            O_CB2      => open,
+            O_CB2_OE_L => open,
+            I_PB       => mc6522_portb_in,
+            O_PB       => mc6522_portb_out,
+            O_PB_OE_L  => mc6522_portb_oe_l,
+            RESET_L    => RST_n,
+            I_P2_H     => via1_clken,
+            ENA_4      => via4_clken,
+            CLK        => clk_16M00);
+
+        -- This is needed as in v003 of the 6522 data out is only valid while I_P2_H is asserted
+        -- I_P2_H is driven from via1_clken
+        data_latch: process(clk_16M00)
+        begin
+            if rising_edge(clk_16M00) then
+                if via1_clken = '1' then
+                    mc6522_data_r <= mc6522_data;
+                end if;
+            end if;
+        end process;
+
+        -- loop back data port
+        mc6522_portb_in <= mc6522_portb_out;
+
+        -- SDCLK is driven from either PB1 or CB1 depending on the SR Mode
+        sdclk_int     <= mc6522_portb_out(1) when mc6522_portb_oe_l(1) = '0' else
+                         mc6522_cb1_out      when mc6522_cb1_oe_l = '0' else
+                         '1';
+        SDCLK         <= sdclk_int;
+        mc6522_cb1_in <= sdclk_int;
+
+        -- SDMOSI is always driven from PB0
+        SDMOSI        <= mc6522_portb_out(0) when mc6522_portb_oe_l(0) = '0' else
+                     '1';
+        -- SDMISO is always read from CB2
+        mc6522_cb2_in <= SDMISO;
+
+        -- SDSS is hardwired to 0 (always selected) as there is only one slave attached
+        SDSS          <= '0';
+
+        IRQ_n <= ula_irq_n and mc6522_irq_n;
+
+		  
 --------------------------------------------------------
 -- Jafa Mk1 Compatible Mode 7 Implementation
 --------------------------------------------------------

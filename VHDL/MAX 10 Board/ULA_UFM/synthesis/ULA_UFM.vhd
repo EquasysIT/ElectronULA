@@ -90,8 +90,8 @@ begin
 
 	onchip_flash_0 : component altera_onchip_flash
 		generic map (
-			INIT_FILENAME                       => "D:/FPGA/Electron/AB/ROM/saa5050.hex",
-			INIT_FILENAME_SIM                   => "D:/FPGA/Electron/AB/ROM/saa5050.hex",
+			INIT_FILENAME                       => "D:/FPGA/Electron/MAX 10 Board - Board Ver 1.04 with Mode 7 Support - Most functional and stable version - ROMS and SD Card/ROM/PLUS1_EMMFS_JAFFA_SAA5050.HEX",
+			INIT_FILENAME_SIM                   => "D:/FPGA/Electron/MAX 10 Board - Board Ver 1.04 with Mode 7 Support - Most functional and stable version - ROMS and SD Card/ROM/PLUS1_EMMFS_JAFFA_SAA5050.HEX",
 			DEVICE_FAMILY                       => "MAX 10",
 			PART_NAME                           => "10M08SCE144C8G",
 			DEVICE_ID                           => "08",
@@ -108,7 +108,7 @@ begin
 			MIN_VALID_ADDR                      => 0,
 			MAX_VALID_ADDR                      => 58879,
 			MIN_UFM_VALID_ADDR                  => 0,
-			MAX_UFM_VALID_ADDR                  => 8191,
+			MAX_UFM_VALID_ADDR                  => 23039,
 			SECTOR1_MAP                         => 1,
 			SECTOR2_MAP                         => 2,
 			SECTOR3_MAP                         => 4,
@@ -133,7 +133,7 @@ begin
 			WRAPPING_BURST_MODE                 => false,
 			IS_DUAL_BOOT                        => "False",
 			IS_ERAM_SKIP                        => "True",
-			IS_COMPRESSED_IMAGE                 => "False"
+			IS_COMPRESSED_IMAGE                 => "True"
 		)
 		port map (
 			clock                   => clock,                              --    clk.clk

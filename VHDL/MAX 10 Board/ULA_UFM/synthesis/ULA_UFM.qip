@@ -2,7 +2,7 @@ set_global_assignment -entity "ULA_UFM" -library "ULA_UFM" -name IP_TOOL_NAME "Q
 set_global_assignment -entity "ULA_UFM" -library "ULA_UFM" -name IP_TOOL_VERSION "17.0"
 set_global_assignment -entity "ULA_UFM" -library "ULA_UFM" -name IP_TOOL_ENV "Qsys"
 set_global_assignment -library "ULA_UFM" -name SOPCINFO_FILE [file join $::quartus(qip_path) "../../ULA_UFM.sopcinfo"]
-set_global_assignment -entity "ULA_UFM" -library "ULA_UFM" -name SLD_INFO "QSYS_NAME ULA_UFM HAS_SOPCINFO 1 GENERATION_ID 1593690891"
+set_global_assignment -entity "ULA_UFM" -library "ULA_UFM" -name SLD_INFO "QSYS_NAME ULA_UFM HAS_SOPCINFO 1 GENERATION_ID 1640206116"
 set_global_assignment -library "ULA_UFM" -name MISC_FILE [file join $::quartus(qip_path) "../ULA_UFM.cmp"]
 set_global_assignment -library "ULA_UFM" -name SLD_FILE [file join $::quartus(qip_path) "ULA_UFM.debuginfo"]
 set_global_assignment -entity "ULA_UFM" -library "ULA_UFM" -name IP_TARGETED_DEVICE_FAMILY "MAX 10"
@@ -15,7 +15,7 @@ set_global_assignment -entity "ULA_UFM" -library "ULA_UFM" -name IP_COMPONENT_DI
 set_global_assignment -entity "ULA_UFM" -library "ULA_UFM" -name IP_COMPONENT_REPORT_HIERARCHY "On"
 set_global_assignment -entity "ULA_UFM" -library "ULA_UFM" -name IP_COMPONENT_INTERNAL "Off"
 set_global_assignment -entity "ULA_UFM" -library "ULA_UFM" -name IP_COMPONENT_VERSION "MS4w"
-set_global_assignment -entity "ULA_UFM" -library "ULA_UFM" -name IP_COMPONENT_PARAMETER "QVVUT19HRU5FUkFUSU9OX0lE::MTU5MzY5MDg5MQ==::QXV0byBHRU5FUkFUSU9OX0lE"
+set_global_assignment -entity "ULA_UFM" -library "ULA_UFM" -name IP_COMPONENT_PARAMETER "QVVUT19HRU5FUkFUSU9OX0lE::MTY0MDIwNjExNg==::QXV0byBHRU5FUkFUSU9OX0lE"
 set_global_assignment -entity "ULA_UFM" -library "ULA_UFM" -name IP_COMPONENT_PARAMETER "QVVUT19ERVZJQ0VfRkFNSUxZ::TUFYIDEw::QXV0byBERVZJQ0VfRkFNSUxZ"
 set_global_assignment -entity "ULA_UFM" -library "ULA_UFM" -name IP_COMPONENT_PARAMETER "QVVUT19ERVZJQ0U=::MTBNMDhTQ0UxNDRDOEc=::QXV0byBERVZJQ0U="
 set_global_assignment -entity "ULA_UFM" -library "ULA_UFM" -name IP_COMPONENT_PARAMETER "QVVUT19ERVZJQ0VfU1BFRURHUkFERQ==::OA==::QXV0byBERVZJQ0VfU1BFRURHUkFERQ=="
@@ -34,12 +34,12 @@ set_global_assignment -entity "altera_onchip_flash" -library "ULA_UFM" -name IP_
 set_global_assignment -entity "altera_onchip_flash" -library "ULA_UFM" -name IP_COMPONENT_PARAMETER "UkVBRF9CVVJTVF9NT0RF::SW5jcmVtZW50aW5n::UmVhZCBidXJzdCBtb2Rl"
 set_global_assignment -entity "altera_onchip_flash" -library "ULA_UFM" -name IP_COMPONENT_PARAMETER "UkVBRF9CVVJTVF9DT1VOVA==::Mg==::UmVhZCBidXJzdCBjb3VudA=="
 set_global_assignment -entity "altera_onchip_flash" -library "ULA_UFM" -name IP_COMPONENT_PARAMETER "Q0xPQ0tfRlJFUVVFTkNZ::MTEyLjA=::Q2xvY2sgZnJlcXVlbmN5"
-set_global_assignment -entity "altera_onchip_flash" -library "ULA_UFM" -name IP_COMPONENT_PARAMETER "Q09ORklHVVJBVElPTl9NT0RF::U2luZ2xlIFVuY29tcHJlc3NlZCBJbWFnZQ==::Q29uZmlndXJhdGlvbiBNb2Rl"
+set_global_assignment -entity "altera_onchip_flash" -library "ULA_UFM" -name IP_COMPONENT_PARAMETER "Q09ORklHVVJBVElPTl9NT0RF::U2luZ2xlIENvbXByZXNzZWQgSW1hZ2U=::Q29uZmlndXJhdGlvbiBNb2Rl"
 set_global_assignment -entity "altera_onchip_flash" -library "ULA_UFM" -name IP_COMPONENT_PARAMETER "U0VDVE9SX0FDQ0VTU19NT0RF::UmVhZCBvbmx5LFJlYWQgb25seSxSZWFkIG9ubHksUmVhZCBvbmx5LFJlYWQgb25seQ==::QWNjZXNzIE1vZGU="
 set_global_assignment -entity "altera_onchip_flash" -library "ULA_UFM" -name IP_COMPONENT_PARAMETER "aW5pdEZsYXNoQ29udGVudA==::dHJ1ZQ==::SW5pdGlhbGl6ZSBmbGFzaCBjb250ZW50"
 set_global_assignment -entity "altera_onchip_flash" -library "ULA_UFM" -name IP_COMPONENT_PARAMETER "dXNlTm9uRGVmYXVsdEluaXRGaWxl::dHJ1ZQ==::RW5hYmxlIG5vbi1kZWZhdWx0IGluaXRpYWxpemF0aW9uIGZpbGU="
-set_global_assignment -entity "altera_onchip_flash" -library "ULA_UFM" -name IP_COMPONENT_PARAMETER "aW5pdGlhbGl6YXRpb25GaWxlTmFtZQ==::RDovRlBHQS9FbGVjdHJvbi9BQi9ST00vc2FhNTA1MC5oZXg=::VXNlciBjcmVhdGVkIGhleCBvciBtaWYgZmlsZQ=="
-set_global_assignment -entity "altera_onchip_flash" -library "ULA_UFM" -name IP_COMPONENT_PARAMETER "aW5pdGlhbGl6YXRpb25GaWxlTmFtZUZvclNpbQ==::RDovRlBHQS9FbGVjdHJvbi9BQi9ST00vc2FhNTA1MC5oZXg=::VXNlciBjcmVhdGVkIGRhdCBmaWxlIGZvciBzaW11bGF0aW9u"
+set_global_assignment -entity "altera_onchip_flash" -library "ULA_UFM" -name IP_COMPONENT_PARAMETER "aW5pdGlhbGl6YXRpb25GaWxlTmFtZQ==::RDovRlBHQS9FbGVjdHJvbi9NQVggMTAgQm9hcmQgLSBCb2FyZCBWZXIgMS4wNCB3aXRoIE1vZGUgNyBTdXBwb3J0IC0gTW9zdCBmdW5jdGlvbmFsIGFuZCBzdGFibGUgdmVyc2lvbiAtIFJPTVMgYW5kIFNEIENhcmQvUk9NL1BMVVMxX0VNTUZTX0pBRkZBX1NBQTUwNTAuSEVY::VXNlciBjcmVhdGVkIGhleCBvciBtaWYgZmlsZQ=="
+set_global_assignment -entity "altera_onchip_flash" -library "ULA_UFM" -name IP_COMPONENT_PARAMETER "aW5pdGlhbGl6YXRpb25GaWxlTmFtZUZvclNpbQ==::RDovRlBHQS9FbGVjdHJvbi9NQVggMTAgQm9hcmQgLSBCb2FyZCBWZXIgMS4wNCB3aXRoIE1vZGUgNyBTdXBwb3J0IC0gTW9zdCBmdW5jdGlvbmFsIGFuZCBzdGFibGUgdmVyc2lvbiAtIFJPTVMgYW5kIFNEIENhcmQvUk9NL1BMVVMxX0VNTUZTX0pBRkZBX1NBQTUwNTAuSEVY::VXNlciBjcmVhdGVkIGRhdCBmaWxlIGZvciBzaW11bGF0aW9u"
 set_global_assignment -entity "altera_onchip_flash" -library "ULA_UFM" -name IP_COMPONENT_PARAMETER "YXV0b0luaXRpYWxpemF0aW9uRmlsZU5hbWU=::VUxBX1VGTV9vbmNoaXBfZmxhc2hfMA==::YXV0b0luaXRpYWxpemF0aW9uRmlsZU5hbWU="
 set_global_assignment -entity "altera_onchip_flash" -library "ULA_UFM" -name IP_COMPONENT_PARAMETER "REVWSUNFX0ZBTUlMWQ==::TUFYIDEw::REVWSUNFX0ZBTUlMWQ=="
 set_global_assignment -entity "altera_onchip_flash" -library "ULA_UFM" -name IP_COMPONENT_PARAMETER "UEFSVF9OQU1F::MTBNMDhTQ0UxNDRDOEc=::UEFSVF9OQU1F"
@@ -56,7 +56,7 @@ set_global_assignment -entity "altera_onchip_flash" -library "ULA_UFM" -name IP_
 set_global_assignment -entity "altera_onchip_flash" -library "ULA_UFM" -name IP_COMPONENT_PARAMETER "TUlOX1ZBTElEX0FERFI=::MA==::TUlOX1ZBTElEX0FERFI="
 set_global_assignment -entity "altera_onchip_flash" -library "ULA_UFM" -name IP_COMPONENT_PARAMETER "TUFYX1ZBTElEX0FERFI=::NTg4Nzk=::TUFYX1ZBTElEX0FERFI="
 set_global_assignment -entity "altera_onchip_flash" -library "ULA_UFM" -name IP_COMPONENT_PARAMETER "TUlOX1VGTV9WQUxJRF9BRERS::MA==::TUlOX1VGTV9WQUxJRF9BRERS"
-set_global_assignment -entity "altera_onchip_flash" -library "ULA_UFM" -name IP_COMPONENT_PARAMETER "TUFYX1VGTV9WQUxJRF9BRERS::ODE5MQ==::TUFYX1VGTV9WQUxJRF9BRERS"
+set_global_assignment -entity "altera_onchip_flash" -library "ULA_UFM" -name IP_COMPONENT_PARAMETER "TUFYX1VGTV9WQUxJRF9BRERS::MjMwMzk=::TUFYX1VGTV9WQUxJRF9BRERS"
 set_global_assignment -entity "altera_onchip_flash" -library "ULA_UFM" -name IP_COMPONENT_PARAMETER "U0VDVE9SMV9NQVA=::MQ==::U0VDVE9SMV9NQVA="
 set_global_assignment -entity "altera_onchip_flash" -library "ULA_UFM" -name IP_COMPONENT_PARAMETER "U0VDVE9SMl9NQVA=::Mg==::U0VDVE9SMl9NQVA="
 set_global_assignment -entity "altera_onchip_flash" -library "ULA_UFM" -name IP_COMPONENT_PARAMETER "U0VDVE9SM19NQVA=::NA==::U0VDVE9SM19NQVA="
@@ -81,7 +81,7 @@ set_global_assignment -entity "altera_onchip_flash" -library "ULA_UFM" -name IP_
 set_global_assignment -entity "altera_onchip_flash" -library "ULA_UFM" -name IP_COMPONENT_PARAMETER "V1JBUFBJTkdfQlVSU1RfTU9ERQ==::ZmFsc2U=::V1JBUFBJTkdfQlVSU1RfTU9ERQ=="
 set_global_assignment -entity "altera_onchip_flash" -library "ULA_UFM" -name IP_COMPONENT_PARAMETER "SVNfRFVBTF9CT09U::RmFsc2U=::SVNfRFVBTF9CT09U"
 set_global_assignment -entity "altera_onchip_flash" -library "ULA_UFM" -name IP_COMPONENT_PARAMETER "SVNfRVJBTV9TS0lQ::VHJ1ZQ==::SVNfRVJBTV9TS0lQ"
-set_global_assignment -entity "altera_onchip_flash" -library "ULA_UFM" -name IP_COMPONENT_PARAMETER "SVNfQ09NUFJFU1NFRF9JTUFHRQ==::RmFsc2U=::SVNfQ09NUFJFU1NFRF9JTUFHRQ=="
+set_global_assignment -entity "altera_onchip_flash" -library "ULA_UFM" -name IP_COMPONENT_PARAMETER "SVNfQ09NUFJFU1NFRF9JTUFHRQ==::VHJ1ZQ==::SVNfQ09NUFJFU1NFRF9JTUFHRQ=="
 
 set_global_assignment -library "ULA_UFM" -name VHDL_FILE [file join $::quartus(qip_path) "ULA_UFM.vhd"]
 set_global_assignment -library "ULA_UFM" -name VERILOG_FILE [file join $::quartus(qip_path) "submodules/altera_onchip_flash_util.v"]

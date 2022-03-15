@@ -6,7 +6,7 @@ use ieee.numeric_std.all;
 entity ufmrom is
     port (
 		clock_72	: in  std_logic;
-		romaddress	: in  std_logic_vector(11 downto 0);
+		romaddress	: in  std_logic_vector(15 downto 0);
 		romdata		: out  std_logic_vector(7 downto 0);
 		romen			: in std_logic;
 		reset_n		: in std_logic;
@@ -85,7 +85,7 @@ begin
 	 u0 : component ULA_UFM
         port map (
             clock                   => clock_72,
-				avmm_data_addr          => "000000" & romaddress(11 downto 2),
+				avmm_data_addr          => "00" & romaddress(15 downto 2),
             avmm_data_read          => flashen,
             avmm_data_readdata      => romdata32,
             avmm_data_waitrequest   => data_waitrequest,
