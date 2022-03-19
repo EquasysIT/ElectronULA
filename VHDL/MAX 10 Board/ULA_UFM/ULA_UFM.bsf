@@ -34,8 +34,8 @@ agreement for further details.
 	(port
 		(pt 0 112)
 		(input)
-		(text "avmm_data_addr[15..0]" (rect 0 0 96 12)(font "Arial" (font_size 8)))
-		(text "avmm_data_addr[15..0]" (rect 4 101 130 112)(font "Arial" (font_size 8)))
+		(text "avmm_data_addr[16..0]" (rect 0 0 96 12)(font "Arial" (font_size 8)))
+		(text "avmm_data_addr[16..0]" (rect 4 101 130 112)(font "Arial" (font_size 8)))
 		(line (pt 0 112)(pt 144 112)(line_width 3))
 	)
 	(port

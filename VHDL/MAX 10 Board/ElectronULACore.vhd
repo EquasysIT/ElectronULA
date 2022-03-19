@@ -25,11 +25,12 @@ use ieee.numeric_std.all;
 entity ElectronULACore is
     generic (
         LimitROMSpeed    : boolean := false;   -- true to limit ROM speed to 2MHz -- If true this breaks MMFS on the AP5
-        LimitIOSpeed     : boolean := true   -- true to limit IO speed to 1MHz
+        LimitIOSpeed     : boolean := true     -- true to limit IO speed to 1MHz
     );
     port (
         clk_16M00 : in  std_logic;
         clk_24M00 : in  std_logic := '0';
+        clk_40M00 : in  std_logic;
 		  clk_72M00 : in  std_logic;
 
         -- CPU Interface
@@ -76,7 +77,8 @@ entity ElectronULACore is
 
         mode_init : in std_logic_vector(1 downto 0);
 		  
-		  
+		  -- MMFS Control
+		  plus1 : in std_logic;
 
         -- Clock Generation
         cpu_clk_out    : out std_logic;
@@ -239,11 +241,6 @@ architecture behavioral of ElectronULACore is
   signal ttxt_vs_out    :   std_logic;
 
   signal mode7_enable   :   std_logic;
-
-  -- internal signals to generate the video clock
-  signal clk_16M00_a    :   std_logic;
-  signal clk_16M00_b    :   std_logic;
-  signal clk_16M00_c    :   std_logic;
   
   -- ROMS
   signal ROM_n_int      :   std_logic;
@@ -254,19 +251,11 @@ architecture behavioral of ElectronULACore is
   -- clock enable generation
   signal clken_counter  : std_logic_vector (3 downto 0) := (others => '0');
   signal turbo_sync     : std_logic_vector (1 downto 0);
-
-  
   
   -- 6522 Signals
   
   signal via1_clken     : std_logic;
-  signal via1_clken_1   : std_logic;
-  signal via1_clken_2   : std_logic;
-  signal via1_clken_4   : std_logic;
   signal via4_clken	   : std_logic;
-  signal via4_clken_1   : std_logic;
-  signal via4_clken_2   : std_logic;
-  signal via4_clken_4   : std_logic;
 
   signal mc6522_enable     : std_logic;
   signal mc6522_data       : std_logic_vector(7 downto 0);
@@ -285,7 +274,6 @@ architecture behavioral of ElectronULACore is
   signal mc6522_portb_oe_l : std_logic_vector(7 downto 0);
   signal sdclk_int         : std_logic;
   
-  
   signal contention     : std_logic;
   signal contention1    : std_logic;
   signal contention2    : std_logic;
@@ -302,12 +290,12 @@ architecture behavioral of ElectronULACore is
   signal clk_counter    : std_logic_vector(2 downto 0) := (others => '0');
 
   signal ula_irq_n      : std_logic;
-      
+  
   -- UFM
   signal read_requested	 : std_logic	:= '0';
   signal read_valid		 : std_logic	:= '0';
   signal ufm_data			 : std_logic_vector(7 downto 0);
-  signal ufm_addr			 : std_logic_vector(15 downto 0);
+  signal ufm_addr			 : std_logic_vector(16 downto 0);
   
   -- SAA5050 Character ROM signals
   signal char_rom_we       : std_logic := '0';
@@ -336,41 +324,56 @@ begin
     -- video timing constants
     -- mode 00 - RGB/s @ 50Hz non-interlaced
     -- mode 01 - RGB/s @ 50Hz interlaced
+	 -- mode 10 - SVGA  @ 50Hz - Not used as FPGA cannot generate 33Mhz clock, only 1 PLL
+    -- mode 11 - SVGA  @ 60Hz
 
-	 clk_video    <= clk_16M00;
+    clk_video    <= clk_40M00 when mode = "11" else
+                    clk_16M00;
+																	   
+    hsync_start  <= std_logic_vector(to_unsigned(759, 11)) when mode = "11" else
+                    std_logic_vector(to_unsigned(768, 11));
 
-    hsync_start  <= std_logic_vector(to_unsigned(768, 11));
+    hsync_end    <= std_logic_vector(to_unsigned(887, 11)) when mode = "11" else
+                    std_logic_vector(to_unsigned(832, 11));
 
-    hsync_end    <= std_logic_vector(to_unsigned(832, 11));
-
-    h_total      <= std_logic_vector(to_unsigned(1023, 11));
-
+    h_total      <= std_logic_vector(to_unsigned(1055, 11)) when mode = "11" else
+                    std_logic_vector(to_unsigned(1023, 11));
+						  
     h_active     <= std_logic_vector(to_unsigned(640, 11));
 
     -- Note: The real ULA uses line 281->283/4 for VSYNC, but on both
     -- my TVs this loses part of the top line. So here we move the
     -- screen down by 7 rows. This should be transparent to software,
     -- as it doesn't affect the timing of the display or RTC
-    -- interrupts. I'm happy to rever this is anyone complains!
+    -- interrupts. I'm happy to revert this if anyone complains!
 
-    vsync_start  <= std_logic_vector(to_unsigned(274, 10));
+    vsync_start  <= std_logic_vector(to_unsigned(556, 10)) when mode = "11" else
+                    std_logic_vector(to_unsigned(274, 10));
 
-    vsync_end    <= std_logic_vector(to_unsigned(276, 10)) when field = '0'                else
+    vsync_end    <= std_logic_vector(to_unsigned(560, 10)) when mode = "11" else
+                    std_logic_vector(to_unsigned(276, 10)) when field = '0' else
                     std_logic_vector(to_unsigned(277, 10));
 
-    v_total      <= std_logic_vector(to_unsigned(311, 10)) when field = '0'                else
+    v_total      <= std_logic_vector(to_unsigned(627, 10)) when mode = "11" else
+                    std_logic_vector(to_unsigned(311, 10)) when field = '0' else
                     std_logic_vector(to_unsigned(312, 10));
+						  
+	 v_active_gph <= std_logic_vector(to_unsigned(512, 10)) when mode = "11" else
+                    std_logic_vector(to_unsigned(256, 10)); 
+					
+	 v_active_txt <= std_logic_vector(to_unsigned(500, 10)) when mode = "11" else
+                    std_logic_vector(to_unsigned(250, 10));
 
-    v_active_gph <= std_logic_vector(to_unsigned(256, 10));
+    v_disp_gph   <= std_logic_vector(to_unsigned(513, 10)) when mode = "11" else
+                    std_logic_vector(to_unsigned(255, 10));
+					
+    v_disp_txt   <= std_logic_vector(to_unsigned(501, 10)) when mode = "11" else
+                    std_logic_vector(to_unsigned(249, 10));
 
-    v_active_txt <= std_logic_vector(to_unsigned(250, 10));
+    v_rtc        <= std_logic_vector(to_unsigned(201, 10)) when mode = "11" else
+                    std_logic_vector(to_unsigned( 99, 10));
 
-    v_disp_gph   <= std_logic_vector(to_unsigned(255, 10));
-
-    v_disp_txt   <= std_logic_vector(to_unsigned(249, 10));
-
-    v_rtc        <= std_logic_vector(to_unsigned( 99, 10));
-	 
+								 
 	
 	 -- MAX 10 UFM contains the Plus 1 AP6 ROM, MMFS 1.44 ROM and the Mode 7 OS 1.91 ROM
 	 ufmrom : entity work.ufmrom port map(
@@ -385,6 +388,7 @@ begin
 	 
 	 
 	-- Initialise SAA5050 Character ROM from the UFM - ROM sits in the SAA5050
+	-- ROM should be placed at the start of the UFM ROM space
 	init_charrom : process(clk_24M00)
 		begin
 			if rising_edge(clk_24M00) then
@@ -402,7 +406,11 @@ begin
 	
 	-- Char ROM address if still initalising SAA5050 ROM otherwise read Plus 1 ROMs	
 	PLS1ROM_data <= ufm_data when char_rom_addr >= x"FFF" else x"FF";
-	ufm_addr <= ( page(1 downto 0) & addr(13 downto 0) ) when char_rom_addr >= x"FFF" else ( "0000" & char_rom_addr );
+	-- Read up to 4 ROMs for the 10M08SCE144C8G
+	-- ufm_addr <= ( page(1 downto 0) & addr(13 downto 0) ) when char_rom_addr >= x"FFF" else ( "0000" & char_rom_addr );
+	-- Read up to 8 ROMs for the 10M08SAE144C8G
+	ufm_addr <= ( page_enable & page(1 downto 0) & addr(13 downto 0) ) when char_rom_addr >= x"FFF" else ( "00000" & char_rom_addr );
+
 	 
 
    -- All of main memory (0x0000-0x7fff) is dual port RAM in the ULA
@@ -441,7 +449,7 @@ begin
              '1';
 
 	 -- Select Paged ROM when address is 8000-BFFF and the ROM 0-7 or 12-15 is paged in
-	 PLS1ROM_n <= '0' when addr(15 downto 14) = "10" and page_enable = '1' and page(2 downto 1) /= "00" and page(2 downto 1) /= "01" else '1';
+	 PLS1ROM_n <= '0' when plus1 = '0' and addr(15 downto 14) = "10" and page(2 downto 1) /= "00" and page(2 downto 1) /= "01" else '1';
 				 
 	 ROM_n <= ROM_n_int;
 				 
@@ -515,11 +523,11 @@ begin
                     mode <= mode_init;
                     mode_init_copy <= mode_init;
                 end if;
-                if (turbo_out_copy /= swc(2 downto 1)) then
-                    turbo_out <= swc(2 downto 1);
-                    turbo_out_copy <= swc(2 downto 1);
+                if (turbo_out_copy /= swc(3 downto 2)) then
+                    turbo_out <= swc(3 downto 2);
+                    turbo_out_copy <= swc(3 downto 2);
                 end if;
-
+					 
                 -- Synchronize the display interrupt signal from the VGA clock domain
                 display_intr1 <= display_intr;
                 display_intr2 <= display_intr1;
@@ -530,10 +538,25 @@ begin
                 -- Synchronize the rtc interrupt signal from the VGA clock domain
                 rtc_intr1 <= rtc_intr;
                 rtc_intr2 <= rtc_intr1;
-                -- Generate the rtc interrupt on the rising edge (line 100 of the screen)
-                if (rtc_intr2 = '0' and rtc_intr1 = '1') then
-                    isr(3) <= '1';
-                end if;
+                if mode = "11" then
+                    -- For 60Hz frame rates we must synthesise a the 50Hz real time clock interrupt
+                    -- In theory the counter limit should be 319999, but there are additional
+                    -- rtc ticks if not rtc interrupt is received between two display interrupts
+                    -- hence the correction factor of 6/5. This comes from the probability
+                    -- of the there not being a 50Hz rtc interrupts between any two successive
+                    -- 60Hz display interrupts.
+                    if (rtc_counter = 383999) then
+                        rtc_counter <= (others => '0');
+                        isr(3) <= '1';
+                    else
+                        rtc_counter <= rtc_counter + 1;
+                    end if;
+                else
+   					  -- Generate the rtc interrupt on the rising edge (line 100 of the screen)
+	      			  if (rtc_intr2 = '0' and rtc_intr1 = '1') then
+								isr(3) <= '1';
+						  end if;
+					 end if;
                 if (comms_mode = "00") then
                     -- Cassette In Mode
                     if (casIn2 = '0') then
@@ -678,7 +701,7 @@ begin
                     if delayed_clear_reset = '1' then
                         power_on_reset <= '0';
                     end if;
-                    ---- Detect control+caps 1 or 2 and change video format
+                    ---- Detect control+caps 1...4 and change video format
                     if (addr = x"9fff" and page_enable = '1' and page(2 downto 1) = "00") then
                         if (kbd(2 downto 1) = "00") then
                             ctrl_caps <= '1';
@@ -693,6 +716,10 @@ begin
                     -- Detect "2" being pressed: RGB interlaced (default)
                     if (addr = x"b7ff" and page_enable = '1' and page(2 downto 1) = "00" and ctrl_caps = '1' and kbd(0) = '0') then
                         mode <= "01";
+                    end if;
+                    -- Detect "4" being pressed: SVGA @ 60 Hz (40 MHz clock)
+                    if (addr = x"bdff" and page_enable = '1' and page(2 downto 1) = "00" and ctrl_caps = '1' and kbd(0) = '0') then
+                        mode <= "11";
                     end if;
                     -- Detect "5" being pressed: 1MHz
                     if (addr = x"beff" and page_enable = '1' and page(2 downto 1) = "00" and ctrl_caps = '1' and kbd(0) = '0') then
@@ -827,6 +854,12 @@ begin
         end if;
     end process;
 
+    -- SGVA timing at 60Hz with a 40.000MHz Pixel Clock
+    -- Horizontal 800 + 40 + 128 + 88 = total 1056
+    -- Vertical   600 +  1 +   4 + 23 = total 628
+    -- Within the the 640x512 is centred so starts at 80,44
+    -- Horizontal 640 + (80 + 40) + 128 + (88 + 80) = total 1056
+    -- Vertical   512 + (44 +  1) +   4 + (23 + 44) = total 628
     -- RGBs timing at 50Hz with a 16.000MHz Pixel Clock
     -- Horizontal 640 + (96 + 26) +  75 + (91 + 96) = total 1024
     -- Vertical   256 + (16 +  2) +   3 + (19 + 16) = total 312
@@ -1241,19 +1274,25 @@ begin
             end case;
 				
 	 -- Generate clock enables for VIA one cycle before cpu_clken
-    if turbo_sync(1) = '0' or LimitIOSpeed then
-		-- 1MHz
-      via1_clken <= clken_counter(3) and clken_counter(2) and clken_counter(1) and not clken_counter(0);
-      via4_clken <=                                           clken_counter(1) and not clken_counter(0);
-    elsif turbo_sync(0) = '0' then
-		-- 2MHz
-      via1_clken <= clken_counter(2) and clken_counter(1) and not clken_counter(0);
-      via4_clken <=                                           not clken_counter(0);
-    else
-		-- 4MHz
-      via1_clken <= clken_counter(1) and not clken_counter(0);
-      via4_clken <= '1';
-    end if;
+	 -- If plus1 = 1 then 6522 via clocks are disabled to disable MMC hardware
+	 if plus1 = '0' then
+		 if turbo_sync(1) = '0' or LimitIOSpeed then
+			-- 1MHz
+			via1_clken <= clken_counter(3) and clken_counter(2) and clken_counter(1) and not clken_counter(0);
+			via4_clken <=                                           clken_counter(1) and not clken_counter(0);
+		 elsif turbo_sync(0) = '0' then
+			-- 2MHz
+			via1_clken <= clken_counter(2) and clken_counter(1) and not clken_counter(0);
+			via4_clken <=                                           not clken_counter(0);
+		 else
+			-- 4MHz
+			via1_clken <= clken_counter(1) and not clken_counter(0);
+			via4_clken <= '1';
+		 end if;
+	 else
+			via1_clken <= '0';
+			via4_clken <= '0';
+	 end if;
 			
 
     -- Generate cpu_clk
@@ -1343,7 +1382,7 @@ begin
         -- SDSS is hardwired to 0 (always selected) as there is only one slave attached
         SDSS          <= '0';
 
-        IRQ_n <= ula_irq_n and mc6522_irq_n;
+        IRQ_n <= ( ula_irq_n and mc6522_irq_n ) when plus1 = '0' else ula_irq_n;
 
 		  
 --------------------------------------------------------

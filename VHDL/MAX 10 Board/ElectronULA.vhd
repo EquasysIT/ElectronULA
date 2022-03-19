@@ -17,18 +17,32 @@
 -- Board Specific changes to support the ULA Replacement Board V1.04 - A Burgess
 -- Board version 1.04 includes an SD card and supports MMFS
 --
--- Switch Off = 1, On = 0 as per physical switch legend
--- Switch default 1=off, 2=off, 3=on, 4=off
--- Switch 1 - On None Interlaced, Off Interlaced
--- Switch 2 - CPU Speed
--- Switch 3 - CPU Speed
---
--- 			  00 - 1Mhz No Memory Contention
--- 			  01 - 1Mhz/2Mhz Memory Contention in modes 0-3 (Real Electron)
--- 			  10 - 2Mhz No Memory Contention
--- 			  11 - 4Mhz No Memory Contention
 
--- Switch 4 - Spare
+-- Switch Details
+	--------------
+
+-- Switch Off = 1, On = 0 as per physical switch legend
+
+-- Switch default 4=on, 3=off, 2=on, 1=off
+
+-- 4321 switch order
+
+
+-- Video
+    
+--	xxx0		SVGA 60Hz
+-- xxx1		RGB 50Hz Interlaced (default)
+-- xx0x		Enable extra plus 1 functions - ROMS and 6522 for MMFS
+--	xx1x		Disable extra plus 1 functions - ROMS and 6522 for MMFS
+--
+-- CPU Speed
+--
+-- 00xx		CPU - 1Mhz No Memory Contention
+-- 01xx		CPU - 1Mhz/2Mhz Memory Contention in modes 0-3 (Real Electron - Default)
+-- 10xx		CPU - 2Mhz No Memory Contention
+-- 11xx		CPU - 4Mhz No Memory Contention - Plus 1 does not work at 4Mhz
+
+
 
 library ieee;
 use ieee.std_logic_1164.all;
@@ -119,6 +133,10 @@ signal clock_16          : std_logic;
 -- SAA5050 Clock
 signal clock_24          : std_logic;
 
+-- VGA 60HZ Clock
+signal clock_40          : std_logic;
+
+
 -- Clock for UFM on MAX10
 signal clock_72          : std_logic;							
 
@@ -144,6 +162,8 @@ signal caps_led          : std_logic;
 signal cpu_clk_out       : std_logic;
 signal cpu_clken_out     : std_logic;
 
+signal mode_init         : std_logic_vector(1 downto 0);
+
 begin
 
 	-- Input clock is 16Mhz
@@ -151,14 +171,15 @@ begin
 		inclk0 => clk_in,
 		c0		=> clock_16,
 		c1		=> clock_24,
-		c2		=> clock_72
+		c2		=> clock_40,
+		c3		=> clock_72
 	);
 	
-	 
     ula : entity work.ElectronULACore
 	 port map (
         clk_16M00 => clock_16,
 		  clk_24M00 => clock_24,
+        clk_40M00 => clock_40,
 		  clk_72M00 => clock_72,
 
         -- CPU Interface
@@ -203,7 +224,10 @@ begin
 
         rom_latch => rom_latch,
 
-        mode_init => '0' & swc(0), -- 00 = None interlaced, 01 = Interlaced Video
+        mode_init => mode_init,
+		  
+		  -- MMFS Control
+		  plus1 => swc(1),
 		  
         -- Clock Generation
 		  cpu_clk_out	  => cpu_clk_out, -- Used for external CPU clock
@@ -214,10 +238,13 @@ begin
         turbo_out      => turbo
     );
 
+	 -- Initialise video mode based on switch settings - 10 = SVGA, 01 = RGB Interlaced
+	 mode_init <= "11" when swc(0) = '0' else "01";
+	 
     red   <= video_red(3);
     green <= video_green(3);
     blue  <= video_blue(3);
-    csync <= video_hsync;
+    csync <= video_hsync and video_vsync;
 	 nhs   <= video_hsync;
     caps  <= not caps_led;
     

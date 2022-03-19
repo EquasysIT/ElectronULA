@@ -7,7 +7,7 @@
  <global>
   <pin name="clock" direction="input" scope="external" />
   <pin name="reset_n" direction="input" scope="external" />
-  <pin name="avmm_data_addr[15..0]" direction="input" scope="external" />
+  <pin name="avmm_data_addr[16..0]" direction="input" scope="external" />
   <pin name="avmm_data_read" direction="input" scope="external" />
   <pin name="avmm_data_readdata[31..0]" direction="output" scope="external" />
   <pin name="avmm_data_waitrequest" direction="output" scope="external" />

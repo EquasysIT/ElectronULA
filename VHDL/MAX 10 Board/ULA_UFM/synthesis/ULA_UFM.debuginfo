@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <EnsembleReport name="ULA_UFM" kind="system" version="17.0" fabric="QSYS">
  <!-- Format version 17.0 595 (Future versions may contain additional information.) -->
- <!-- 2021.12.22.20:48:38 -->
+ <!-- 2022.01.30.22:33:37 -->
  <!-- A collection of modules and connections -->
  <parameter name="clockCrossingAdapter">
   <type>com.altera.sopcmodel.ensemble.EClockAdapter</type>
@@ -13,7 +13,7 @@
  </parameter>
  <parameter name="device">
   <type>java.lang.String</type>
-  <value>10M08SCE144C8G</value>
+  <value>10M08SAE144C8G</value>
   <derived>false</derived>
   <enabled>true</enabled>
   <visible>true</visible>
@@ -53,7 +53,7 @@
  </parameter>
  <parameter name="generationId">
   <type>int</type>
-  <value>1640206116</value>
+  <value>1643582015</value>
   <derived>false</derived>
   <enabled>true</enabled>
   <visible>true</visible>
@@ -192,7 +192,7 @@ the requested settings for a module instance. -->
   </assignment>
   <assignment>
    <name>embeddedsw.CMacro.SECTOR3_END_ADDR</name>
-   <value>92159</value>
+   <value>116735</value>
   </assignment>
   <assignment>
    <name>embeddedsw.CMacro.SECTOR3_START_ADDR</name>
@@ -204,23 +204,23 @@ the requested settings for a module instance. -->
   </assignment>
   <assignment>
    <name>embeddedsw.CMacro.SECTOR4_END_ADDR</name>
-   <value>235519</value>
+   <value>176127</value>
   </assignment>
   <assignment>
    <name>embeddedsw.CMacro.SECTOR4_START_ADDR</name>
-   <value>92160</value>
+   <value>116736</value>
   </assignment>
   <assignment>
    <name>embeddedsw.CMacro.SECTOR5_ENABLED</name>
-   <value>0</value>
+   <value>1</value>
   </assignment>
   <assignment>
    <name>embeddedsw.CMacro.SECTOR5_END_ADDR</name>
-   <value>-1</value>
+   <value>319487</value>
   </assignment>
   <assignment>
    <name>embeddedsw.CMacro.SECTOR5_START_ADDR</name>
-   <value>-1</value>
+   <value>176128</value>
   </assignment>
   <assignment>
    <name>embeddedsw.memoryInfo.DAT_SYM_INSTALL_DIR</name>
@@ -260,7 +260,7 @@ the requested settings for a module instance. -->
   </assignment>
   <assignment>
    <name>embeddedsw.memoryInfo.MEM_INIT_FILENAME</name>
-   <value>PLUS1_EMMFS_JAFFA_SAA5050</value>
+   <value>MANY_ROMS</value>
   </assignment>
   <assignment>
    <name>embeddedsw.memoryInfo.USE_BYTE_ADDRESSING_FOR_HEX</name>
@@ -324,7 +324,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="SECTOR_ID">
    <type>[Ljava.lang.String;</type>
-   <value>1,2,NA,3,4</value>
+   <value>1,2,3,4,5</value>
    <derived>true</derived>
    <enabled>false</enabled>
    <visible>true</visible>
@@ -340,7 +340,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="SECTOR_ADDRESS_MAPPING">
    <type>[Ljava.lang.String;</type>
-   <value>0x00000 - 0x03fff,0x04000 - 0x07fff,NA,0x08000 - 0x167ff,0x16800 - 0x397ff</value>
+   <value>0x00000 - 0x03fff,0x04000 - 0x07fff,0x08000 - 0x1c7ff,0x1c800 - 0x2afff,0x2b000 - 0x4dfff</value>
    <derived>true</derived>
    <enabled>false</enabled>
    <visible>true</visible>
@@ -348,7 +348,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="SECTOR_STORAGE_TYPE">
    <type>[Ljava.lang.String;</type>
-   <value>UFM,UFM,NA,UFM,CFM</value>
+   <value>UFM,UFM,UFM,UFM,CFM</value>
    <derived>true</derived>
    <enabled>false</enabled>
    <visible>true</visible>
@@ -372,7 +372,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="initializationFileName">
    <type>java.lang.String</type>
-   <value>D:/FPGA/Electron/MAX 10 Board - Board Ver 1.04 with Mode 7 Support - Most functional and stable version - ROMS and SD Card/ROM/PLUS1_EMMFS_JAFFA_SAA5050.HEX</value>
+   <value>D:/FPGA/Electron/MAX 10 Board - Board Ver 1.04 with Mode 7 Support - Most functional and stable version - Support ROMS and SD Card/ROM/MANY_ROMS.HEX</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -380,7 +380,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="initializationFileNameForSim">
    <type>java.lang.String</type>
-   <value>D:/FPGA/Electron/MAX 10 Board - Board Ver 1.04 with Mode 7 Support - Most functional and stable version - ROMS and SD Card/ROM/PLUS1_EMMFS_JAFFA_SAA5050.HEX</value>
+   <value>D:/FPGA/Electron/MAX 10 Board - Board Ver 1.04 with Mode 7 Support - Most functional and stable version - Support ROMS and SD Card/ROM/MANY_ROMS.HEX</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -397,7 +397,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="INIT_FILENAME">
    <type>java.lang.String</type>
-   <value>D:/FPGA/Electron/MAX 10 Board - Board Ver 1.04 with Mode 7 Support - Most functional and stable version - ROMS and SD Card/ROM/PLUS1_EMMFS_JAFFA_SAA5050.HEX</value>
+   <value>D:/FPGA/Electron/MAX 10 Board - Board Ver 1.04 with Mode 7 Support - Most functional and stable version - Support ROMS and SD Card/ROM/MANY_ROMS.HEX</value>
    <derived>true</derived>
    <enabled>false</enabled>
    <visible>false</visible>
@@ -405,7 +405,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="INIT_FILENAME_SIM">
    <type>java.lang.String</type>
-   <value>D:/FPGA/Electron/MAX 10 Board - Board Ver 1.04 with Mode 7 Support - Most functional and stable version - ROMS and SD Card/ROM/PLUS1_EMMFS_JAFFA_SAA5050.HEX</value>
+   <value>D:/FPGA/Electron/MAX 10 Board - Board Ver 1.04 with Mode 7 Support - Most functional and stable version - Support ROMS and SD Card/ROM/MANY_ROMS.HEX</value>
    <derived>true</derived>
    <enabled>false</enabled>
    <visible>false</visible>
@@ -422,7 +422,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="PART_NAME">
    <type>java.lang.String</type>
-   <value>10M08SCE144C8G</value>
+   <value>10M08SAE144C8G</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>false</visible>
@@ -489,7 +489,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="SECTOR3_END_ADDR">
    <type>int</type>
-   <value>23039</value>
+   <value>29183</value>
    <derived>true</derived>
    <enabled>true</enabled>
    <visible>false</visible>
@@ -497,7 +497,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="SECTOR4_START_ADDR">
    <type>int</type>
-   <value>23040</value>
+   <value>29184</value>
    <derived>true</derived>
    <enabled>true</enabled>
    <visible>false</visible>
@@ -505,7 +505,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="SECTOR4_END_ADDR">
    <type>int</type>
-   <value>58879</value>
+   <value>44031</value>
    <derived>true</derived>
    <enabled>true</enabled>
    <visible>false</visible>
@@ -513,17 +513,17 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="SECTOR5_START_ADDR">
    <type>int</type>
-   <value>0</value>
+   <value>44032</value>
    <derived>true</derived>
-   <enabled>false</enabled>
+   <enabled>true</enabled>
    <visible>false</visible>
    <valid>true</valid>
   </parameter>
   <parameter name="SECTOR5_END_ADDR">
    <type>int</type>
-   <value>0</value>
+   <value>79871</value>
    <derived>true</derived>
-   <enabled>false</enabled>
+   <enabled>true</enabled>
    <visible>false</visible>
    <valid>true</valid>
   </parameter>
@@ -537,7 +537,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="MAX_VALID_ADDR">
    <type>int</type>
-   <value>58879</value>
+   <value>79871</value>
    <derived>true</derived>
    <enabled>true</enabled>
    <visible>false</visible>
@@ -553,7 +553,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="MAX_UFM_VALID_ADDR">
    <type>int</type>
-   <value>23039</value>
+   <value>44031</value>
    <derived>true</derived>
    <enabled>true</enabled>
    <visible>false</visible>
@@ -577,7 +577,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="SECTOR3_MAP">
    <type>int</type>
-   <value>4</value>
+   <value>3</value>
    <derived>true</derived>
    <enabled>true</enabled>
    <visible>false</visible>
@@ -585,7 +585,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="SECTOR4_MAP">
    <type>int</type>
-   <value>5</value>
+   <value>4</value>
    <derived>true</derived>
    <enabled>true</enabled>
    <visible>false</visible>
@@ -593,7 +593,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="SECTOR5_MAP">
    <type>int</type>
-   <value>0</value>
+   <value>5</value>
    <derived>true</derived>
    <enabled>true</enabled>
    <visible>false</visible>
@@ -601,7 +601,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="ADDR_RANGE1_END_ADDR">
    <type>int</type>
-   <value>8191</value>
+   <value>79871</value>
    <derived>true</derived>
    <enabled>true</enabled>
    <visible>false</visible>
@@ -617,7 +617,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="ADDR_RANGE2_OFFSET">
    <type>int</type>
-   <value>21504</value>
+   <value>0</value>
    <derived>true</derived>
    <enabled>true</enabled>
    <visible>false</visible>
@@ -625,7 +625,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="AVMM_DATA_ADDR_WIDTH">
    <type>int</type>
-   <value>16</value>
+   <value>17</value>
    <derived>true</derived>
    <enabled>true</enabled>
    <visible>false</visible>
@@ -919,7 +919,7 @@ parameters are a RESULT of the module parameters. -->
    </parameter>
    <parameter name="addressSpan">
     <type>java.math.BigInteger</type>
-    <value>235520</value>
+    <value>319488</value>
     <derived>true</derived>
     <enabled>true</enabled>
     <visible>false</visible>
@@ -1007,7 +1007,7 @@ parameters are a RESULT of the module parameters. -->
    </parameter>
    <parameter name="explicitAddressSpan">
     <type>java.math.BigInteger</type>
-    <value>235520</value>
+    <value>319488</value>
     <derived>false</derived>
     <enabled>true</enabled>
     <visible>true</visible>
@@ -1218,7 +1218,7 @@ parameters are a RESULT of the module parameters. -->
    <port>
     <name>avmm_data_addr</name>
     <direction>Input</direction>
-    <width>16</width>
+    <width>17</width>
     <role>address</role>
    </port>
    <port>
@@ -1286,5 +1286,5 @@ parameters are a RESULT of the module parameters. -->
   <version>17.0</version>
  </plugin>
  <reportVersion>17.0 595</reportVersion>
- <uniqueIdentifier>50E549403E370000017DE3E729C1</uniqueIdentifier>
+ <uniqueIdentifier>50E549403E370000017EAD1F4D50</uniqueIdentifier>
 </EnsembleReport>

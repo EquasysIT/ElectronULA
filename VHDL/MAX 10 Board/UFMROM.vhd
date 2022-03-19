@@ -3,10 +3,16 @@ use ieee.std_logic_1164.all;
 use ieee.std_logic_unsigned.all;
 use ieee.numeric_std.all;
 
+-- 10M08SCE144C8G FPGA Supports 4 x 16K ROMS
+-- 10M08SAE144C8G FPGA Supports 8 x 16K ROMS
+
 entity ufmrom is
+	 generic (
+		ROMADDR_WIDTH	: integer := 17	-- 16 for 10M08SCE144C8G, 17 for 10M08SAE144C8G
+	 );
     port (
-		clock_72	: in  std_logic;
-		romaddress	: in  std_logic_vector(15 downto 0);
+		clock_72		: in  std_logic;
+		romaddress	: in  std_logic_vector(ROMADDR_WIDTH-1 downto 0);
 		romdata		: out  std_logic_vector(7 downto 0);
 		romen			: in std_logic;
 		reset_n		: in std_logic;
@@ -20,7 +26,7 @@ architecture behavioral of ufmrom is
      component ULA_UFM is
         port (
             clock                   : in  std_logic;
-            avmm_data_addr          : in  std_logic_vector(15 downto 0);
+            avmm_data_addr          : in  std_logic_vector(ROMADDR_WIDTH-1 downto 0);
             avmm_data_read          : in  std_logic;
             avmm_data_readdata      : out std_logic_vector(31 downto 0);
             avmm_data_waitrequest   : out std_logic;
@@ -85,7 +91,7 @@ begin
 	 u0 : component ULA_UFM
         port map (
             clock                   => clock_72,
-				avmm_data_addr          => "00" & romaddress(15 downto 2),
+				avmm_data_addr          => "00" & romaddress(ROMADDR_WIDTH-1 downto 2),
             avmm_data_read          => flashen,
             avmm_data_readdata      => romdata32,
             avmm_data_waitrequest   => data_waitrequest,
