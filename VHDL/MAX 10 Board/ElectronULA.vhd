@@ -249,12 +249,11 @@ begin
     caps  <= not caps_led;
     
     -- IRQ is open collector to avoid contention with the expansion bus
-    nIRQOUT <= '0' when ula_irq_n = '0' else 'Z';
+    nIRQOUT <= ula_irq_n;
 	 
     data_in <= data;
 
-	 data <= ula_data when RnWIN = '1' and ula_enable = '1' else
-		"ZZZZZZZZ";
+	 data <= ula_data when RnWIN = '1' and ula_enable = '1' and cpu_clk_out = '1' else "ZZZZZZZZ";
 	
 	 clk_out <= cpu_clk_out;
 	  
@@ -267,9 +266,9 @@ begin
 	  A_OE <= '0';
 	  A_DIR <= '1';
 	  
-	  -- CPU Data Bus - Enable buffer when ULA is being 'read' by CPU. Direction controlled by RnW
+	  -- CPU Data Bus - Enable buffer when ULA is being accessed by CPU. Direction controlled by RnW
 	  PD_OE <= '0' when ula_enable = '1' else '1';
-	  PD_DIR <= not RnWIN;
+	  PD_DIR <= '1' when RnWIN = '0' and cpu_clk_out = '1' else '0';
  
 	  -- Video, Sound and Cassette - Enable Buffer
 	  G1_OE <= '0';
