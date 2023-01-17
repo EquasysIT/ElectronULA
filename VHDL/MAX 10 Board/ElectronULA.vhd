@@ -251,10 +251,13 @@ begin
     -- IRQ is open collector to avoid contention with the expansion bus
     nIRQOUT <= ula_irq_n;
 	 
-    data_in <= data;
+    -- 6502 Write, Databus is only reliable when 6502 clock is high
+	 data_in <= data when cpu_clk_out = '1' else x"FF";
 
+	 -- 6502 Read, Databus is only reliable when 6502 clock is high, also avoids any databus contention
 	 data <= ula_data when RnWIN = '1' and ula_enable = '1' and cpu_clk_out = '1' else "ZZZZZZZZ";
-	
+	 	
+	 
 	 clk_out <= cpu_clk_out;
 	  
 --------------------------------------------------------
@@ -268,8 +271,9 @@ begin
 	  
 	  -- CPU Data Bus - Enable buffer when ULA is being accessed by CPU. Direction controlled by RnW
 	  PD_OE <= '0' when ula_enable = '1' else '1';
+	  -- Only switch buffer direction in from the 6502 when the 6502 clock is high. This avoids any databus contention
 	  PD_DIR <= '1' when RnWIN = '0' and cpu_clk_out = '1' else '0';
- 
+	   
 	  -- Video, Sound and Cassette - Enable Buffer
 	  G1_OE <= '0';
 
