@@ -13,7 +13,7 @@
 --
 --Design Name: ElectronULACore
 
--- 20/12/2021
+-- 18/03/2023
 -- Board Specific changes to support the ULA Replacement Board V1.04 - A Burgess
 -- Board version 1.04 includes an SD card and supports MMFS
 
@@ -24,17 +24,17 @@ use ieee.numeric_std.all;
 
 entity ElectronULACore is
     generic (
-        LimitROMSpeed    : boolean := false;   -- true to limit ROM speed to 2MHz -- If true this breaks MMFS on the AP5
-        LimitIOSpeed     : boolean := true     -- true to limit IO speed to 1MHz
+        LimitROMSpeed    : boolean := true;-- true to limit ROM speed to 2MHz
+        LimitIOSpeed     : boolean := true  -- true to limit IO speed to 1MHz
     );
     port (
         clk_16M00 : in  std_logic;
         clk_24M00 : in  std_logic := '0';
         clk_40M00 : in  std_logic;
-		  clk_72M00 : in  std_logic;
+		  clk_96M00 : in  std_logic;
 
         -- CPU Interface
-        addr      : in  std_logic_vector(15 downto 0);
+        addr	   : in  std_logic_vector(15 downto 0);
         data_in   : in  std_logic_vector(7 downto 0);  -- Async, but stable on rising edge of cpu_clken
         data_out  : out std_logic_vector(7 downto 0);
         data_en   : out std_logic;
@@ -72,8 +72,6 @@ entity ElectronULACore is
         -- MISC
         caps      : out std_logic;
         motor     : out std_logic;
-
-        rom_latch : out std_logic_vector(3 downto 0);
 
         mode_init : in std_logic_vector(1 downto 0);
 		  
@@ -247,7 +245,6 @@ architecture behavioral of ElectronULACore is
   signal PLS1ROM_n	   :   std_logic;
   signal PLS1ROM_data   :	 std_logic_vector(7 downto 0);
   
-
   -- clock enable generation
   signal clken_counter  : std_logic_vector (3 downto 0) := (others => '0');
   signal turbo_sync     : std_logic_vector (1 downto 0);
@@ -291,7 +288,7 @@ architecture behavioral of ElectronULACore is
 
   signal ula_irq_n      : std_logic;
   
-  -- UFM
+  -- UFM - Flash Memory in the MAX10
   signal read_requested	 : std_logic	:= '0';
   signal read_valid		 : std_logic	:= '0';
   signal ufm_data			 : std_logic_vector(7 downto 0);
@@ -301,8 +298,8 @@ architecture behavioral of ElectronULACore is
   signal char_rom_we       : std_logic := '0';
   signal char_rom_addr     : std_logic_vector(11 downto 0) := (others => '0');
   signal char_rom_data     : std_logic_vector(7 downto 0) := (others => '0');
-  
 
+  
 -- Helper function to cast an std_logic value to an integer
 function sl2int (x: std_logic) return integer is
 begin
@@ -373,20 +370,20 @@ begin
     v_rtc        <= std_logic_vector(to_unsigned(201, 10)) when mode = "11" else
                     std_logic_vector(to_unsigned( 99, 10));
 
-								 
 	
 	 -- MAX 10 UFM contains the Plus 1 AP6 ROM, MMFS 1.44 ROM and the Mode 7 OS 1.91 ROM
+	 -- UFM takes 5 clock ticks from read request to providing data
 	 ufmrom : entity work.ufmrom port map(
-		clock_72 => clk_72M00,
+		clock_96 => clk_96M00,
 		romaddress => ufm_addr,
 		romdata => ufm_data,
 		romen => '1',
-		reset_n => '1',
+		reset_n => RST_n,
 		read_requested => read_requested,
 		read_valid => read_valid
     );
-	 
-	 
+	  
+
 	-- Initialise SAA5050 Character ROM from the UFM - ROM sits in the SAA5050
 	-- ROM should be placed at the start of the UFM ROM space
 	init_charrom : process(clk_24M00)
@@ -403,16 +400,12 @@ begin
 				end if;
 			end if;
 	end process;
-	
-	-- Char ROM address if still initalising SAA5050 ROM otherwise read Plus 1 ROMs	
+		
+	-- Read Char ROM address if still initialising the SAA5050 ROM, otherwise read Plus 1 ROMs
+	ufm_addr <= ( page_enable & page(1 downto 0) & addr(13 downto 0) ) when char_rom_addr >= x"FFF" else ( "00000" & char_rom_addr );				
 	PLS1ROM_data <= ufm_data when char_rom_addr >= x"FFF" else x"FF";
-	-- Read up to 4 ROMs for the 10M08SCE144C8G
-	-- ufm_addr <= ( page(1 downto 0) & addr(13 downto 0) ) when char_rom_addr >= x"FFF" else ( "0000" & char_rom_addr );
-	-- Read up to 8 ROMs for the 10M08SAE144C8G
-	ufm_addr <= ( page_enable & page(1 downto 0) & addr(13 downto 0) ) when char_rom_addr >= x"FFF" else ( "00000" & char_rom_addr );
-
-	 
-
+	
+	
    -- All of main memory (0x0000-0x7fff) is dual port RAM in the ULA
    ram_32k : entity work.RAM_32K_DualPort port map(
 		-- Port A is the 6502 port
@@ -451,12 +444,12 @@ begin
 	 -- Select Paged ROM when address is 8000-BFFF and the ROM 0-7 or 12-15 is paged in
 	 PLS1ROM_n <= '0' when plus1 = '0' and addr(15 downto 14) = "10" and page(2 downto 1) /= "00" and page(2 downto 1) /= "01" else '1';
 				 
+	 -- External ROM enable signal
 	 ROM_n <= ROM_n_int;
-				 
 
     -- ULA Reads + RAM Reads + KBD Reads
-    data_out <= PLS1ROM_data              when PLS1ROM_n = '0' else
-					 ram_data                  when ram_n = '0' else
+    data_out <= ram_data                  when ram_n = '0' else
+					 PLS1ROM_data              when PLS1ROM_n = '0' else
                 "0000" & (kbd xor "1111") when kbd_access = '1' else
                 isr_data                  when addr(15 downto 8) = x"FE" and addr(3 downto 0) = x"0" else
                 data_shift                when addr(15 downto 8) = x"FE" and addr(3 downto 0) = x"4" else
@@ -465,8 +458,8 @@ begin
 					 mc6522_data_r             when mc6522_enable = '1' else																	  
                 x"F1"; -- todo FIXEME
 
-    data_en  <= '1'                       when PLS1ROM_n = '0' else
-					 '1'                       when ram_n = '0' else
+    data_en  <= '1'                       when ram_n = '0' else
+					 '1'                       when PLS1ROM_n = '0' else
                 '1'                       when kbd_access = '1' else
                 '1'                       when addr(15 downto 8) = x"FE" else
                 '1'                       when crtc_enable = '1' else
@@ -488,8 +481,6 @@ begin
     ula_irq_n  <= not master_irq;
 
     isr_data   <= '1' & isr(6 downto 2) & power_on_reset & master_irq;
-
-    rom_latch  <= page_enable & page;
 
     process (clk_16M00, RST_n)
     begin
@@ -1280,7 +1271,7 @@ begin
 			-- 1MHz
 			via1_clken <= clken_counter(3) and clken_counter(2) and clken_counter(1) and not clken_counter(0);
 			via4_clken <=                                           clken_counter(1) and not clken_counter(0);
-		 elsif turbo_sync(0) = '0' then
+			elsif turbo_sync(0) = '0' then					 
 			-- 2MHz
 			via1_clken <= clken_counter(2) and clken_counter(1) and not clken_counter(0);
 			via4_clken <=                                           not clken_counter(0);
@@ -1321,7 +1312,7 @@ begin
 -- MMC Filing System
 --------------------------------------------------------
 
-        mc6522_enable  <= '1' when addr(15 downto 4) = x"fcb" else '0';
+        mc6522_enable  <= '1' when addr(15 downto 4) = x"fcb" and plus1 = '0' else '0';
 
         via : entity work.M6522 port map(
             I_RS       => addr(3 downto 0),
@@ -1383,7 +1374,6 @@ begin
         SDSS          <= '0';
 
         IRQ_n <= ( ula_irq_n and mc6522_irq_n ) when plus1 = '0' else ula_irq_n;
-
 		  
 --------------------------------------------------------
 -- Jafa Mk1 Compatible Mode 7 Implementation

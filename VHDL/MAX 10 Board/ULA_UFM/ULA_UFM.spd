@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<simPackage>
+ <file
+   path="simulation/submodules/altera_onchip_flash_util.v"
+   type="VERILOG"
+   library="onchip_flash_0" />
+ <file
+   path="simulation/submodules/altera_onchip_flash.v"
+   type="VERILOG"
+   library="onchip_flash_0" />
+ <file
+   path="simulation/submodules/altera_onchip_flash_avmm_data_controller.v"
+   type="VERILOG"
+   library="onchip_flash_0" />
+ <file path="simulation/ULA_UFM.vhd" type="VHDL" />
+ <topLevel name="ULA_UFM" />
+ <deviceFamily name="max10" />
+ <modelMap
+   controllerPath="ULA_UFM.onchip_flash_0"
+   modelPath="ULA_UFM.onchip_flash_0" />
+</simPackage>

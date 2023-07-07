@@ -11,7 +11,7 @@ entity ufmrom is
 		ROMADDR_WIDTH	: integer := 17	-- 16 for 10M08SCE144C8G, 17 for 10M08SAE144C8G
 	 );
     port (
-		clock_72		: in  std_logic;
+		clock_96		: in  std_logic;
 		romaddress	: in  std_logic_vector(ROMADDR_WIDTH-1 downto 0);
 		romdata		: out  std_logic_vector(7 downto 0);
 		romen			: in std_logic;
@@ -39,6 +39,7 @@ architecture behavioral of ufmrom is
 	 signal flashen						: std_logic := '0';
     signal romdata32						: std_logic_vector(31 downto 0);
 	 signal romdatapos					: std_logic_vector(1 downto 0);
+	 signal romaddr						: std_logic_vector(ROMADDR_WIDTH-1 downto 0);
 	 signal data_waitrequest			: std_logic;
 	 signal data_readdatavalid			: std_logic;
 	 signal counta							: std_logic_vector(1 downto 0) := "00";
@@ -49,9 +50,9 @@ architecture behavioral of ufmrom is
 begin
 	
 	 -- Select correct byte from the 32 bit data read from the UFM
-	 process(clock_72)
+	 process(clock_96)
 	 begin
-		if rising_edge(clock_72) then
+		if rising_edge(clock_96) then
 			case state is
 				when start =>
 					flashen <= '0';
@@ -71,6 +72,8 @@ begin
 								romdata <= romdata32(23 downto 16);
 							when "11" =>
 								romdata <= romdata32(31 downto 24);
+							when others =>
+								romdata <= x"FF";
 						end case;
 						state <= start;
 					end if;
@@ -81,7 +84,11 @@ begin
 	 
 	 read_requested <= romen;
 	 read_valid <= data_readdatavalid;
-
+	 -- Use the below if BASIC & MOS are in UFM
+	 -- romaddr <= "00" & romaddress(ROMADDR_WIDTH-1 downto 2) - x"2000";
+	 
+	 -- Use the below if normal paged ROMS are in the UFM
+	 romaddr <= "00" & romaddress(ROMADDR_WIDTH-1 downto 2);
   
 	 -- The UFM is 32bits wide so needs to be divided by 4 for byte addressing
 	 -- Address decode for UFM is real address / 4
@@ -90,8 +97,8 @@ begin
 	 -- MOS   real address is xC000 / 4 = x3000 - x2000 = x1000 starting address in the UFM
 	 u0 : component ULA_UFM
         port map (
-            clock                   => clock_72,
-				avmm_data_addr          => "00" & romaddress(ROMADDR_WIDTH-1 downto 2),
+            clock                   => clock_96,
+				avmm_data_addr          => romaddr,
             avmm_data_read          => flashen,
             avmm_data_readdata      => romdata32,
             avmm_data_waitrequest   => data_waitrequest,

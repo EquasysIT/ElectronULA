@@ -1,8 +1,33 @@
-Info: Starting: Create block symbol file (.bsf)
-Info: qsys-generate "D:\FPGA\Electron\MAX 10 Board - Board Ver 1.04 with Mode 7 Support - Most functional and stable version - Support ROMS and SD Card\ULA_UFM.qsys" --block-symbol-file --output-directory="D:\FPGA\Electron\MAX 10 Board - Board Ver 1.04 with Mode 7 Support - Most functional and stable version - Support ROMS and SD Card\ULA_UFM" --family="MAX 10" --part=10M08SAE144C8G
-Progress: Loading MAX 10 Board - Board Ver 1.04 with Mode 7 Support - Most functional and stable version - Support ROMS and SD Card/ULA_UFM.qsys
+Info: Starting: Create simulation model
+Info: qsys-generate "D:\FPGA\Electron\MAX 10 Board - Board Ver 1.05 - 10M08SC144C8G - As per 1.04 Board Config\ULA_UFM.qsys" --simulation=VHDL --allow-mixed-language-simulation --output-directory="D:\FPGA\Electron\MAX 10 Board - Board Ver 1.05 - 10M08SC144C8G - As per 1.04 Board Config\ULA_UFM\simulation" --family="MAX 10" --part=10M08SCE144C8G
+Progress: Loading MAX 10 Board - Board Ver 1.05 - 10M08SC144C8G - As per 1.04 Board Config/ULA_UFM.qsys
 Progress: Reading input file
-Progress: Adding onchip_flash_0 [altera_onchip_flash 17.0]
+Progress: Adding onchip_flash_0 [altera_onchip_flash 22.1]
+Progress: Parameterizing module onchip_flash_0
+Progress: Building connections
+Progress: Parameterizing connections
+Progress: Validating
+Progress: Done reading input file
+Info: ULA_UFM: Generating ULA_UFM "ULA_UFM" for SIM_VHDL
+Info: onchip_flash_0: "ULA_UFM" instantiated altera_onchip_flash "onchip_flash_0"
+Info: ULA_UFM: Done "ULA_UFM" with 2 modules, 4 files
+Info: qsys-generate succeeded.
+Info: Finished: Create simulation model
+Info: Starting: Create Modelsim Project.
+Info: sim-script-gen --spd="D:\FPGA\Electron\MAX 10 Board - Board Ver 1.05 - 10M08SC144C8G - As per 1.04 Board Config\ULA_UFM\ULA_UFM.spd" --output-directory="D:/FPGA/Electron/MAX 10 Board - Board Ver 1.05 - 10M08SC144C8G - As per 1.04 Board Config/ULA_UFM/simulation/" --use-relative-paths=true
+Info: Doing: ip-make-simscript --spd=D:\FPGA\Electron\MAX 10 Board - Board Ver 1.05 - 10M08SC144C8G - As per 1.04 Board Config\ULA_UFM\ULA_UFM.spd --output-directory=D:/FPGA/Electron/MAX 10 Board - Board Ver 1.05 - 10M08SC144C8G - As per 1.04 Board Config/ULA_UFM/simulation/ --use-relative-paths=true
+Info: Generating the following file(s) for MODELSIM simulator in D:/FPGA/Electron/MAX 10 Board - Board Ver 1.05 - 10M08SC144C8G - As per 1.04 Board Config/ULA_UFM/simulation/ directory:
+Info: 	mentor/msim_setup.tcl
+Info: Generating the following file(s) for RIVIERA simulator in D:/FPGA/Electron/MAX 10 Board - Board Ver 1.05 - 10M08SC144C8G - As per 1.04 Board Config/ULA_UFM/simulation/ directory:
+Info: 	aldec/rivierapro_setup.tcl
+Info: For information on how to simulate your IP, see the explanatory comments in the simulator-specific subdirectories under D:/FPGA/Electron/MAX 10 Board - Board Ver 1.05 - 10M08SC144C8G - As per 1.04 Board Config/ULA_UFM/simulation/.
+Info: Regenerate these scripts whenever you make any change to any Quartus-generated IP in your project.
+Info: Finished: Create Modelsim Project.
+Info: Starting: Create block symbol file (.bsf)
+Info: qsys-generate "D:\FPGA\Electron\MAX 10 Board - Board Ver 1.05 - 10M08SC144C8G - As per 1.04 Board Config\ULA_UFM.qsys" --block-symbol-file --output-directory="D:\FPGA\Electron\MAX 10 Board - Board Ver 1.05 - 10M08SC144C8G - As per 1.04 Board Config\ULA_UFM" --family="MAX 10" --part=10M08SCE144C8G
+Progress: Loading MAX 10 Board - Board Ver 1.05 - 10M08SC144C8G - As per 1.04 Board Config/ULA_UFM.qsys
+Progress: Reading input file
+Progress: Adding onchip_flash_0 [altera_onchip_flash 22.1]
 Progress: Parameterizing module onchip_flash_0
 Progress: Building connections
 Progress: Parameterizing connections
@@ -12,10 +37,10 @@ Info: qsys-generate succeeded.
 Info: Finished: Create block symbol file (.bsf)
 Info: 
 Info: Starting: Create HDL design files for synthesis
-Info: qsys-generate "D:\FPGA\Electron\MAX 10 Board - Board Ver 1.04 with Mode 7 Support - Most functional and stable version - Support ROMS and SD Card\ULA_UFM.qsys" --synthesis=VHDL --output-directory="D:\FPGA\Electron\MAX 10 Board - Board Ver 1.04 with Mode 7 Support - Most functional and stable version - Support ROMS and SD Card\ULA_UFM\synthesis" --family="MAX 10" --part=10M08SAE144C8G
-Progress: Loading MAX 10 Board - Board Ver 1.04 with Mode 7 Support - Most functional and stable version - Support ROMS and SD Card/ULA_UFM.qsys
+Info: qsys-generate "D:\FPGA\Electron\MAX 10 Board - Board Ver 1.05 - 10M08SC144C8G - As per 1.04 Board Config\ULA_UFM.qsys" --synthesis=VHDL --greybox --output-directory="D:\FPGA\Electron\MAX 10 Board - Board Ver 1.05 - 10M08SC144C8G - As per 1.04 Board Config\ULA_UFM\synthesis" --family="MAX 10" --part=10M08SCE144C8G
+Progress: Loading MAX 10 Board - Board Ver 1.05 - 10M08SC144C8G - As per 1.04 Board Config/ULA_UFM.qsys
 Progress: Reading input file
-Progress: Adding onchip_flash_0 [altera_onchip_flash 17.0]
+Progress: Adding onchip_flash_0 [altera_onchip_flash 22.1]
 Progress: Parameterizing module onchip_flash_0
 Progress: Building connections
 Progress: Parameterizing connections
@@ -25,5 +50,7 @@ Info: ULA_UFM: Generating ULA_UFM "ULA_UFM" for QUARTUS_SYNTH
 Info: onchip_flash_0: Generating top-level entity altera_onchip_flash
 Info: onchip_flash_0: "ULA_UFM" instantiated altera_onchip_flash "onchip_flash_0"
 Info: ULA_UFM: Done "ULA_UFM" with 2 modules, 5 files
+Info: Generating third-party timing and resource estimation model ...
+Info: Done generating third-party timing and resource estimation model.
 Info: qsys-generate succeeded.
 Info: Finished: Create HDL design files for synthesis

@@ -13,7 +13,7 @@
 --
 --Design Name: ElectronUla
 
--- 20/12/2021
+-- 18/03/2023
 -- Board Specific changes to support the ULA Replacement Board V1.04 - A Burgess
 -- Board version 1.04 includes an SD card and supports MMFS
 --
@@ -32,15 +32,15 @@
     
 --	xxx0		SVGA 60Hz
 -- xxx1		RGB 50Hz Interlaced (default)
--- xx0x		Enable extra plus 1 functions - ROMS and 6522 for MMFS
---	xx1x		Disable extra plus 1 functions - ROMS and 6522 for MMFS
+-- xx0x		Enable Plus 1 functions - ROMS and 6522 for MMFS (Ensure this is disabled if you have a Plus 1 fitted)
+--	xx1x		Disable Plus 1 functions - ROMS and 6522 for MMFS
 --
 -- CPU Speed
 --
 -- 00xx		CPU - 1Mhz No Memory Contention
 -- 01xx		CPU - 1Mhz/2Mhz Memory Contention in modes 0-3 (Real Electron - Default)
 -- 10xx		CPU - 2Mhz No Memory Contention
--- 11xx		CPU - 4Mhz No Memory Contention - Plus 1 does not work at 4Mhz
+-- 11xx		CPU - 4Mhz No Memory Contention
 
 
 
@@ -78,7 +78,7 @@ entity ElectronULA is
         csync         : out std_logic;
 		  nhs           : out std_logic;
 		  
-		  -- ROM
+		  -- External MOS & BASIC ROM
 		  ROM_n         : out std_logic;
 
         -- Audio
@@ -102,7 +102,7 @@ entity ElectronULA is
 		  -- Switches
         swc				 : in  std_logic_vector(3 downto 0);
 
-		  -- Buffer Control
+		  --- Buffer Control ---
 		  
 		  -- CPU Address Bus Buffer
 		  A_DIR         : out std_logic;
@@ -112,7 +112,6 @@ entity ElectronULA is
 		  PD_DIR        : out std_logic;
 		  PD_OE         : out std_logic;
 		    
-		  
 		  -- Video and Cassette Buffer
 		  G1_OE         : out std_logic;
 		  
@@ -136,54 +135,60 @@ signal clock_24          : std_logic;
 -- VGA 60HZ Clock
 signal clock_40          : std_logic;
 
+-- Clock for UFM on MAX10. UFM is used to store ROMS
+signal clock_96          : std_logic;
 
--- Clock for UFM on MAX10
-signal clock_72          : std_logic;							
-
+-- CPU signals
 signal data_in           : std_logic_vector(7 downto 0);
-
+signal cpu_clk_out       : std_logic;
+signal cpu_clken_out     : std_logic;
 signal ula_enable        : std_logic;
 signal ula_data          : std_logic_vector(7 downto 0);
 signal ula_irq_n         : std_logic;
+
+signal cpu_buf_dly       : std_logic;
+
+-- Video signals
 signal video_red         : std_logic_vector(3 downto 0);
 signal video_green       : std_logic_vector(3 downto 0);
 signal video_blue        : std_logic_vector(3 downto 0);
 signal video_hsync       : std_logic;
 signal video_vsync       : std_logic;
-signal rom_latch         : std_logic_vector(3 downto 0);
 
+-- Reset control
 signal powerup_reset_n   : std_logic;
-signal reset_counter     : std_logic_vector (16 downto 0) := (others => '0');
+signal reset_counter     : std_logic_vector (18 downto 0) := (others => '0');
 signal nRST					 : std_logic;
 
+-- Turbo speed control
 signal turbo             : std_logic_vector(1 downto 0);
 
+-- LED signal
 signal caps_led          : std_logic;
-signal cpu_clk_out       : std_logic;
-signal cpu_clken_out     : std_logic;
 
+-- Mode selection
 signal mode_init         : std_logic_vector(1 downto 0);
 
 begin
 
 	-- Input clock is 16Mhz
-	inst_pll: entity work.Clk16 port map(
+	inst_pll : entity work.Clk16 port map(
 		inclk0 => clk_in,
 		c0		=> clock_16,
 		c1		=> clock_24,
 		c2		=> clock_40,
-		c3		=> clock_72
+		c3		=> clock_96
 	);
-	
+
     ula : entity work.ElectronULACore
 	 port map (
         clk_16M00 => clock_16,
 		  clk_24M00 => clock_24,
         clk_40M00 => clock_40,
-		  clk_72M00 => clock_72,
+		  clk_96M00 => clock_96,
 
         -- CPU Interface
-        addr      => addr,
+        addr	   => addr,
         data_in   => data_in,
         data_out  => ula_data,
         data_en   => ula_enable,
@@ -222,11 +227,9 @@ begin
         caps      => caps_led,
         motor     => casMO,
 
-        rom_latch => rom_latch,
-
         mode_init => mode_init,
 		  
-		  -- MMFS Control
+		  -- Enable/Disable Plus 1 features within the ULA
 		  plus1 => swc(1),
 		  
         -- Clock Generation
@@ -248,46 +251,54 @@ begin
 	 nhs   <= video_hsync;
     caps  <= not caps_led;
     
-    -- IRQ is open collector to avoid contention with the expansion bus
+    -- nIRQOUT controls the enable signal of an open collector buffer which pulls IRQ low
     nIRQOUT <= ula_irq_n;
 	 
-    -- 6502 Write, Databus is only reliable when 6502 clock is high
-	 data_in <= data when cpu_clk_out = '1' else x"FF";
+	 -- CPU Write
+    data_in <= data;
 
-	 -- 6502 Read, Databus is only reliable when 6502 clock is high, also avoids any databus contention
-	 data <= ula_data when RnWIN = '1' and ula_enable = '1' and cpu_clk_out = '1' else "ZZZZZZZZ";
-	 	
-	 
+	 -- Databus - Only drive data bus when cpu_clk is high
+	 -- CPU Read
+	 data <= ula_data when RnWIN = '1' and ula_enable = '1' and cpu_buf_dly = '1' else "ZZZZZZZZ";
+	
 	 clk_out <= cpu_clk_out;
+	 
 	  
 --------------------------------------------------------
 -- Buffer Control
 --------------------------------------------------------
 
-	  -- CPU Address Bus - Enable buffer and set direction to be driven from external CPU
+	 -- CPU Address Bus - Enable buffer and set direction to be driven from external CPU 
+	 A_OE <= '0';
+	 A_DIR <= '1';
+	 
+	 -- Keep data bus buffer open for an extra 31ns 
+	 process(clock_16)
+	 begin
+		if falling_edge(clock_16) then
+			cpu_buf_dly <= cpu_clk_out;
+		end if;
+	 end process;
 	  
-	  A_OE <= '0';
-	  A_DIR <= '1';
-	  
-	  -- CPU Data Bus - Enable buffer when ULA is being accessed by CPU. Direction controlled by RnW
-	  PD_OE <= '0' when ula_enable = '1' else '1';
-	  -- Only switch buffer direction in from the 6502 when the 6502 clock is high. This avoids any databus contention
-	  PD_DIR <= '1' when RnWIN = '0' and cpu_clk_out = '1' else '0';
-	   
-	  -- Video, Sound and Cassette - Enable Buffer
-	  G1_OE <= '0';
+	 -- CPU Data Bus - Enable buffer when ULA is being accessed by the CPU
+	 PD_OE <= '0' when ula_enable = '1' and cpu_buf_dly = '1' else '1';
 
-	  -- CLK_OUT, ROM and CAPS Lock Control - Enable Buffer
-	  G3_OE <= '0';
-	  
-	  -- Keyboard, CPU and CLK_IN Control - Enable Buffer
-	  G4_OE <= '0';
-	  
-	  -- Only used when internal 6502 is implemented
-	  RnWOE <= '1';
-	  RnWOUT <= '0';
+	 -- Databus direction controlled by RnW
+	 PD_DIR <= not RnWIN;
+ 
+	 -- Video, Sound and Cassette - Enable Buffer
+	 G1_OE <= '0';
 
+	 -- CLK_OUT, ROM and CAPS Lock Control - Enable Buffer
+	 G3_OE <= '0';
 	  
+	 -- Keyboard, CPU and CLK_IN Control - Enable Buffer
+	 G4_OE <= '0';
+	  
+	 -- Only used when internal 6502 is implemented
+	 RnWOE <= '1';
+	 RnWOUT <= '0';
+
 --------------------------------------------------------
 -- Power Up Reset Generation
 --------------------------------------------------------
@@ -302,9 +313,9 @@ begin
         end if;
     end process;
 
-    -- Reset is open collector to avoid contention when BREAK pressed
+    -- Reset is open collector to avoid contention when BREAK is pressed
     nRSTOUT <= '0' when powerup_reset_n = '0' else 'Z';
 	 nRST <= '0' when powerup_reset_n = '0' or nRSTIN = '0' else '1';
 	 
-
+	 
 end behavioral;
