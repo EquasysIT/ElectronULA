@@ -178,8 +178,8 @@ begin
 
     -- Generate flash signal for 3:1 ratio
     flash <= flash_counter(5) and flash_counter(4);
-
-    -- Sync inputs
+	 
+	 -- Sync inputs
     process(DI_CLOCK,nRESET)
     begin
         if nRESET = '0' then

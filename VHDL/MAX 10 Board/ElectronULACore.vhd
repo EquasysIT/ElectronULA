@@ -13,9 +13,10 @@
 --
 --Design Name: ElectronULACore
 
--- 18/03/2023
--- Board Specific changes to support the ULA Replacement Board V1.04 - A Burgess
--- Board version 1.04 includes an SD card and supports MMFS
+-- 09/07/2023 - Andy Burgess
+-- Board Specific changes to support the ULA Replacement Board V1.05
+-- Board version 1.05 includes an SD card and supports MMFS, also has databus inline resistors to reduce noise
+-- Added fix for the address bus which was causing crashes in games - Keyboard was causing noise on the address bus
 
 library ieee;
 use ieee.std_logic_1164.all;
@@ -29,7 +30,7 @@ entity ElectronULACore is
     );
     port (
         clk_16M00 : in  std_logic;
-        clk_24M00 : in  std_logic := '0';
+        clk_24M00 : in  std_logic;
         clk_40M00 : in  std_logic;
 		  clk_96M00 : in  std_logic;
 
@@ -298,7 +299,10 @@ architecture behavioral of ElectronULACore is
   signal char_rom_we       : std_logic := '0';
   signal char_rom_addr     : std_logic_vector(11 downto 0) := (others => '0');
   signal char_rom_data     : std_logic_vector(7 downto 0) := (others => '0');
-
+  
+  -- Signals to clean up the noise on the incoming address bus caused by the Keyboard
+  signal addr_in			 : std_logic_vector(15 downto 0);
+  signal addr_in_delay	 : std_logic_vector(15 downto 0);
   
 -- Helper function to cast an std_logic value to an integer
 function sl2int (x: std_logic) return integer is
@@ -371,8 +375,8 @@ begin
                     std_logic_vector(to_unsigned( 99, 10));
 
 	
-	 -- MAX 10 UFM contains the Plus 1 AP6 ROM, MMFS 1.44 ROM and the Mode 7 OS 1.91 ROM
-	 -- UFM takes 5 clock ticks from read request to providing data
+	 -- MAX 10 UFM contains the ROMS including the SAA5050 character ROM
+	 -- UFM takes 12 clock cycles (125ns @ 96Mhz) from read request to providing data. UFM suggests 5 cycles which looks to be incorrect
 	 ufmrom : entity work.ufmrom port map(
 		clock_96 => clk_96M00,
 		romaddress => ufm_addr,
@@ -402,16 +406,31 @@ begin
 	end process;
 		
 	-- Read Char ROM address if still initialising the SAA5050 ROM, otherwise read Plus 1 ROMs
-	ufm_addr <= ( page_enable & page(1 downto 0) & addr(13 downto 0) ) when char_rom_addr >= x"FFF" else ( "00000" & char_rom_addr );				
-	PLS1ROM_data <= ufm_data when char_rom_addr >= x"FFF" else x"FF";
+	ufm_addr <= ( page_enable & page(1 downto 0) & addr_in(13 downto 0) ) when char_rom_addr >= x"FFF" else ( "00000" & char_rom_addr );				
+	PLS1ROM_data <= ufm_data;
 	
+	-- Ensure a high signal on the address bus of at least 25ns to register a valid signal and not a glitch caused by the keyboard
+	-- 25ns looks to be long enough to mask the glitch but also needs to not delay the address bus too long or the UFM access time fails @ 4Mhz
+	addr_noise_fix : process (clk_40M00)
+   begin
+		if rising_edge(clk_40M00) then
+			for addrloop in 0 to 15 loop
+				addr_in_delay(addrloop) <= addr(addrloop);
+				if addr_in_delay(addrloop) = '1' and addr(addrloop) = '1' then
+					addr_in(addrloop) <= '1';
+				else
+					addr_in(addrloop) <= '0';
+				end if;
+			end loop;
+		end if;
+   end process;
 	
    -- All of main memory (0x0000-0x7fff) is dual port RAM in the ULA
    ram_32k : entity work.RAM_32K_DualPort port map(
 		-- Port A is the 6502 port
 		clka  => clk_16M00,
 		wea   => ram_we,
-		addra => addr(14 downto 0),
+		addra => addr_in(14 downto 0),
 		dina  => data_in,
 		douta => ram_data,
 		-- Port B is the VGA Port
@@ -421,12 +440,11 @@ begin
 		dinb  => x"00",
 		doutb => screen_data
    );
-	ram_we <= '1' when addr(15) = '0' and R_W_n = '0' and cpu_clken = '1' else '0';
-	ram_n <= addr(15);
+	ram_we <= '1' when addr_in(15) = '0' and R_W_n = '0' and cpu_clken = '1' else '0';
+	ram_n <= addr_in(15);
 
    sound <= sound_bit;
-
-
+   
 ------------------------------
 --									 --
 --			PAGED ROMS			 --
@@ -437,22 +455,22 @@ begin
     -- The external ROM is enabled:
     -- - When the address is C000-FBFF and FF00-FFFF
     -- - When the address is 8000-BFFF and the ROM 10 or 11 is paged in
-    ROM_n_int <= '0' when addr(15 downto 14) = "11" and io_access = '0' else -- MOS ROM
-             '0' when addr(15 downto 14) = "10" and page_enable = '1' and page(2 downto 1) = "01" else -- BASIC ROM
+    ROM_n_int <= '0' when addr_in(15 downto 14) = "11" and io_access = '0' else -- MOS ROM
+             '0' when addr_in(15 downto 14) = "10" and page_enable = '1' and page(2 downto 1) = "01" else -- BASIC ROM
              '1';
 
 	 -- Select Paged ROM when address is 8000-BFFF and the ROM 0-7 or 12-15 is paged in
-	 PLS1ROM_n <= '0' when plus1 = '0' and addr(15 downto 14) = "10" and page(2 downto 1) /= "00" and page(2 downto 1) /= "01" else '1';
+	 PLS1ROM_n <= '0' when plus1 = '0' and addr_in(15 downto 14) = "10" and page(2 downto 1) /= "00" and page(2 downto 1) /= "01" else '1';
 				 
 	 -- External ROM enable signal
 	 ROM_n <= ROM_n_int;
-
+	 
     -- ULA Reads + RAM Reads + KBD Reads
     data_out <= ram_data                  when ram_n = '0' else
 					 PLS1ROM_data              when PLS1ROM_n = '0' else
                 "0000" & (kbd xor "1111") when kbd_access = '1' else
-                isr_data                  when addr(15 downto 8) = x"FE" and addr(3 downto 0) = x"0" else
-                data_shift                when addr(15 downto 8) = x"FE" and addr(3 downto 0) = x"4" else
+                isr_data                  when addr_in(15 downto 8) = x"FE" and addr_in(3 downto 0) = x"0" else
+                data_shift                when addr_in(15 downto 8) = x"FE" and addr_in(3 downto 0) = x"4" else
                 crtc_do                   when crtc_enable = '1' else
                 status_do                 when status_enable = '1' else
 					 mc6522_data_r             when mc6522_enable = '1' else																	  
@@ -461,7 +479,7 @@ begin
     data_en  <= '1'                       when ram_n = '0' else
 					 '1'                       when PLS1ROM_n = '0' else
                 '1'                       when kbd_access = '1' else
-                '1'                       when addr(15 downto 8) = x"FE" else
+                '1'                       when addr_in(15 downto 8) = x"FE" else
                 '1'                       when crtc_enable = '1' else
                 '1'                       when status_enable = '1' else
 					 '1'                       when mc6522_enable = '1' else
@@ -693,53 +711,53 @@ begin
                         power_on_reset <= '0';
                     end if;
                     ---- Detect control+caps 1...4 and change video format
-                    if (addr = x"9fff" and page_enable = '1' and page(2 downto 1) = "00") then
+                    if (addr_in = x"9fff" and page_enable = '1' and page(2 downto 1) = "00") then
                         if (kbd(2 downto 1) = "00") then
                             ctrl_caps <= '1';
                         else
                             ctrl_caps <= '0';
                         end if;
                     end if;
-                    -- Detect "1" being pressed: RGB non-interlaced
-                    if (addr = x"afff" and page_enable = '1' and page(2 downto 1) = "00" and ctrl_caps = '1' and kbd(0) = '0') then
+                    -- Detect "1" being pressed: RGB non-interlaced (default)
+                    if (addr_in = x"afff" and page_enable = '1' and page(2 downto 1) = "00" and ctrl_caps = '1' and kbd(0) = '0') then
                         mode <= "00";
                     end if;
                     -- Detect "2" being pressed: RGB interlaced (default)
-                    if (addr = x"b7ff" and page_enable = '1' and page(2 downto 1) = "00" and ctrl_caps = '1' and kbd(0) = '0') then
+                    if (addr_in = x"b7ff" and page_enable = '1' and page(2 downto 1) = "00" and ctrl_caps = '1' and kbd(0) = '0') then
                         mode <= "01";
                     end if;
                     -- Detect "4" being pressed: SVGA @ 60 Hz (40 MHz clock)
-                    if (addr = x"bdff" and page_enable = '1' and page(2 downto 1) = "00" and ctrl_caps = '1' and kbd(0) = '0') then
+                    if (addr_in = x"bdff" and page_enable = '1' and page(2 downto 1) = "00" and ctrl_caps = '1' and kbd(0) = '0') then
                         mode <= "11";
                     end if;
                     -- Detect "5" being pressed: 1MHz
-                    if (addr = x"beff" and page_enable = '1' and page(2 downto 1) = "00" and ctrl_caps = '1' and kbd(0) = '0') then
+                    if (addr_in = x"beff" and page_enable = '1' and page(2 downto 1) = "00" and ctrl_caps = '1' and kbd(0) = '0') then
                         turbo_out <= "00";
                     end if;
                     -- Detect "6" being pressed: 2MHz with contention (default)
-                    if (addr = x"bf7f" and page_enable = '1' and page(2 downto 1) = "00" and ctrl_caps = '1' and kbd(0) = '0') then
+                    if (addr_in = x"bf7f" and page_enable = '1' and page(2 downto 1) = "00" and ctrl_caps = '1' and kbd(0) = '0') then
                         turbo_out <= "01";
                     end if;
                     -- Detect "7" being pressed: 2MHz no contention
-                    if (addr = x"bfbf" and page_enable = '1' and page(2 downto 1) = "00" and ctrl_caps = '1' and kbd(0) = '0') then
+                    if (addr_in = x"bfbf" and page_enable = '1' and page(2 downto 1) = "00" and ctrl_caps = '1' and kbd(0) = '0') then
                         turbo_out <= "10";
                     end if;
                     -- Detect "8" being pressed: 4MHz
-                    if (addr = x"bfdf" and page_enable = '1' and page(2 downto 1) = "00" and ctrl_caps = '1' and kbd(0) = '0') then
+                    if (addr_in = x"bfdf" and page_enable = '1' and page(2 downto 1) = "00" and ctrl_caps = '1' and kbd(0) = '0') then
                         turbo_out <= "11";
                     end if;
-                    if (addr(15 downto 8) = x"FE") then
+                    if (addr_in(15 downto 8) = x"FE") then
                         if (R_W_n = '1') then
                             -- Clear the power on reset flag on the first read of the ISR (FEx0)
-                            if (addr(3 downto 0) = x"0") then
+                            if (addr_in(3 downto 0) = x"0") then
                                 delayed_clear_reset <= '1';
                             end if;
                             -- Clear the RDFull interrupts on reading the data_shift register
-                            if (addr(3 downto 0) = x"4") then
+                            if (addr_in(3 downto 0) = x"4") then
                                 isr(4) <= '0';
                             end if;
                         else
-                            case addr(3 downto 0) is
+                            case addr_in(3 downto 0) is
                             when x"0" =>
                                 ier(6 downto 2) <= data_in(6 downto 2);
                             when x"1" =>
@@ -836,7 +854,7 @@ begin
                             when others =>
                                 -- A '1' in the palatte data means disable the colour
                                 -- Invert the stored palette, to make the palette logic simpler
-                                palette(slv2int(addr(2 downto 0))) <= data_in xor "11111111";
+                                palette(slv2int(addr_in(2 downto 0))) <= data_in xor "11111111";
                             end case;
                         end if;
                     end if;
@@ -1142,17 +1160,17 @@ begin
 --------------------------------------------------------
 
     -- Keyboard accesses always need to happen at 1MHz
-    kbd_access <= '1' when addr(15 downto 14) = "10" and page_enable = '1' and page(2 downto 1) = "00" else '0';
+    kbd_access <= '1' when addr_in(15 downto 14) = "10" and page_enable = '1' and page(2 downto 1) = "00" else '0';
 
     -- IO accesses always happen at 1MHz (no contention)
     -- This includes keyboard reads in paged ROM slots 8/9
-    io_access <= '1' when addr(15 downto 8) = x"FC" or addr(15 downto 8) = x"FD" or addr(15 downto 8) = x"FE" or kbd_access = '1' else '0';
+    io_access <= '1' when addr_in(15 downto 8) = x"FC" or addr_in(15 downto 8) = x"FD" or addr_in(15 downto 8) = x"FE" or kbd_access = '1' else '0';
 
     -- ROM accesses always happen at 2MHz (no contention)
-    rom_access <= addr(15) and not io_access;
+    rom_access <= addr_in(15) and not io_access;
 
     -- RAM accesses always happen at 1MHz (with contention)
-    ram_access <= not addr(15);
+    ram_access <= not addr_in(15);
 
     clk_gen1 : process(clk_16M00)
     begin
@@ -1312,10 +1330,10 @@ begin
 -- MMC Filing System
 --------------------------------------------------------
 
-        mc6522_enable  <= '1' when addr(15 downto 4) = x"fcb" and plus1 = '0' else '0';
+        mc6522_enable  <= '1' when addr_in(15 downto 4) = x"fcb" and plus1 = '0' else '0';
 
         via : entity work.M6522 port map(
-            I_RS       => addr(3 downto 0),
+            I_RS       => addr_in(3 downto 0),
             I_DATA     => data_in(7 downto 0),
             O_DATA     => mc6522_data(7 downto 0),
             I_RW_L     => R_W_n,
@@ -1412,12 +1430,12 @@ begin
                 end if;
             end process;
 
-        crtc_enable <= '1' when addr(15 downto 0) = x"fc1c" or
-                                addr(15 downto 0) = x"fc1d" or
-                                addr(15 downto 0) = x"fc1f"
+        crtc_enable <= '1' when addr_in(15 downto 0) = x"fc1c" or
+                                addr_in(15 downto 0) = x"fc1d" or
+                                addr_in(15 downto 0) = x"fc1f"
                            else '0';
 
-        status_enable <= '1' when addr(15 downto 0) = x"fc1e" else '0';
+        status_enable <= '1' when addr_in(15 downto 0) = x"fc1e" else '0';
 
         status_do <= "00" & crtc_vsync & "00000";
 
@@ -1425,10 +1443,10 @@ begin
             -- inputs
             CLOCK  => clk_16M00,
             CLKEN  => crtc_clken,
-            nRESET => RST_n,
+            nRESET => not power_on_reset,
             ENABLE => crtc_enable,
             R_nW   => R_W_n,
-            RS     => addr(0),
+            RS     => addr_in(0),
             DI     => data_in,
             LPSTB  => '0',
             -- outputs
@@ -1454,7 +1472,7 @@ begin
             -- inputs
             CLOCK    => ttxt_clock,
             CLKEN    => ttxt_clken,
-            nRESET   => RST_n,
+            nRESET   => not power_on_reset,
             DI_CLOCK => clk_16M00,
             DI_CLKEN => '1',
             DI       => screen_data(6 downto 0),

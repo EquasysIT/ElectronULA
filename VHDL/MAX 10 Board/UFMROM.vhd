@@ -11,7 +11,7 @@ entity ufmrom is
 		ROMADDR_WIDTH	: integer := 17	-- 16 for 10M08SCE144C8G, 17 for 10M08SAE144C8G
 	 );
     port (
-		clock_96		: in  std_logic;
+		clock_96	: in  std_logic;
 		romaddress	: in  std_logic_vector(ROMADDR_WIDTH-1 downto 0);
 		romdata		: out  std_logic_vector(7 downto 0);
 		romen			: in std_logic;

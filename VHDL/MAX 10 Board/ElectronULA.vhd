@@ -13,10 +13,11 @@
 --
 --Design Name: ElectronUla
 
--- 18/03/2023
--- Board Specific changes to support the ULA Replacement Board V1.04 - A Burgess
--- Board version 1.04 includes an SD card and supports MMFS
---
+-- 09/07/2023 - Andy Burgess
+-- Board Specific changes to support the ULA Replacement Board V1.05
+-- Board version 1.05 includes an SD card and supports MMFS, also has databus inline resistors to reduce noise
+-- Added fix for the address bus which was causing crashes in games - Keyboard was causing noise on the address bus
+
 
 -- Switch Details
 	--------------
@@ -85,7 +86,7 @@ entity ElectronULA is
         sound         : out std_logic;
 		  
         -- Keyboard
-        kbd           : in  std_logic_vector(3 downto 0);
+        kbd           : in std_logic_vector(3 downto 0);
         caps          : out std_logic;
         
 		  -- SD Card
@@ -145,8 +146,7 @@ signal cpu_clken_out     : std_logic;
 signal ula_enable        : std_logic;
 signal ula_data          : std_logic_vector(7 downto 0);
 signal ula_irq_n         : std_logic;
-
-signal cpu_buf_dly       : std_logic;
+signal phi2					 : std_logic;
 
 -- Video signals
 signal video_red         : std_logic_vector(3 downto 0);
@@ -250,20 +250,27 @@ begin
     csync <= video_hsync and video_vsync;
 	 nhs   <= video_hsync;
     caps  <= not caps_led;
-    
+	     
     -- nIRQOUT controls the enable signal of an open collector buffer which pulls IRQ low
     nIRQOUT <= ula_irq_n;
 	 
 	 -- CPU Write
     data_in <= data;
 
-	 -- Databus - Only drive data bus when cpu_clk is high
+	 -- Create phi2 signal from cpu_clk i.e. delayed by 31ns
+	 process(clock_16)
+	 begin
+		if falling_edge(clock_16) then
+			phi2 <= cpu_clk_out;
+		end if;
+	 end process;
+	 
+	 -- Databus - Only drive data bus when phi2 is high
 	 -- CPU Read
-	 data <= ula_data when RnWIN = '1' and ula_enable = '1' and cpu_buf_dly = '1' else "ZZZZZZZZ";
+	 data <= ula_data when RnWIN = '1' and ula_enable = '1' and phi2 = '1' else "ZZZZZZZZ";
 	
 	 clk_out <= cpu_clk_out;
-	 
-	  
+	   
 --------------------------------------------------------
 -- Buffer Control
 --------------------------------------------------------
@@ -271,17 +278,9 @@ begin
 	 -- CPU Address Bus - Enable buffer and set direction to be driven from external CPU 
 	 A_OE <= '0';
 	 A_DIR <= '1';
-	 
-	 -- Keep data bus buffer open for an extra 31ns 
-	 process(clock_16)
-	 begin
-		if falling_edge(clock_16) then
-			cpu_buf_dly <= cpu_clk_out;
-		end if;
-	 end process;
 	  
-	 -- CPU Data Bus - Enable buffer when ULA is being accessed by the CPU
-	 PD_OE <= '0' when ula_enable = '1' and cpu_buf_dly = '1' else '1';
+	 -- CPU Data Bus - Enable buffer when ULA is being accessed by the CPU and phi2 is high
+	 PD_OE <= '0' when ula_enable = '1' and phi2 = '1' else '1';
 
 	 -- Databus direction controlled by RnW
 	 PD_DIR <= not RnWIN;
