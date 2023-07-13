@@ -293,7 +293,7 @@ architecture behavioral of ElectronULACore is
   signal read_requested	 : std_logic	:= '0';
   signal read_valid		 : std_logic	:= '0';
   signal ufm_data			 : std_logic_vector(7 downto 0);
-  signal ufm_addr			 : std_logic_vector(16 downto 0);
+  signal ufm_addr			 : std_logic_vector(15 downto 0);
   
   -- SAA5050 Character ROM signals
   signal char_rom_we       : std_logic := '0';
@@ -406,7 +406,7 @@ begin
 	end process;
 		
 	-- Read Char ROM address if still initialising the SAA5050 ROM, otherwise read Plus 1 ROMs
-	ufm_addr <= ( page_enable & page(1 downto 0) & addr_in(13 downto 0) ) when char_rom_addr >= x"FFF" else ( "00000" & char_rom_addr );				
+	ufm_addr <= ( page(1 downto 0) & addr_in(13 downto 0) ) when char_rom_addr >= x"FFF" else ( "0000" & char_rom_addr );
 	PLS1ROM_data <= ufm_data;
 	
 	-- Ensure a high signal on the address bus of at least 25ns to register a valid signal and not a glitch caused by the keyboard
