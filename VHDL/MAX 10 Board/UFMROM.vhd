@@ -8,7 +8,7 @@ use ieee.numeric_std.all;
 
 entity ufmrom is
 	 generic (
-		ROMADDR_WIDTH	: integer := 17	-- 16 for 10M08SCE144C8G, 17 for 10M08SAE144C8G
+		ROMADDR_WIDTH	: integer := 16	-- 16 for 10M08SCE144C8G, 17 for 10M08SAE144C8G
 	 );
     port (
 		clock_96	: in  std_logic;
