@@ -376,7 +376,7 @@ begin
 
 	
 	 -- MAX 10 UFM contains the ROMS including the SAA5050 character ROM
-	 -- UFM takes 12 clock cycles (125ns @ 96Mhz) from read request to providing data. UFM suggests 5 cycles which looks to be incorrect
+	 -- UFM takes 12 clock cycles (125ns @ 96Mhz) from read request to providing data. UFM guide suggests 5 cycles which looks to be incorrect
 	 ufmrom : entity work.ufmrom port map(
 		clock_96 => clk_96M00,
 		romaddress => ufm_addr,
@@ -387,7 +387,6 @@ begin
 		read_valid => read_valid
     );
 	  
-
 	-- Initialise SAA5050 Character ROM from the UFM - ROM sits in the SAA5050
 	-- ROM should be placed at the start of the UFM ROM space
 	init_charrom : process(clk_24M00)
