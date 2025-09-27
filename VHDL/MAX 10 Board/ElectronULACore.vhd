@@ -390,22 +390,22 @@ begin
 	-- Initialise SAA5050 Character ROM from the UFM - ROM sits in the SAA5050
 	-- ROM should be placed at the start of the UFM ROM space
 	init_charrom : process(clk_24M00)
-		begin
-			if rising_edge(clk_24M00) then
-				if char_rom_addr < x"FFF" then
-					char_rom_data <= ufm_data;
-					if read_valid = '1' then
-						char_rom_addr <= char_rom_addr + 1;
-					end if;
-					char_rom_we <= '1';
-				else
-					char_rom_we <= '0';
+	begin
+		if rising_edge(clk_24M00) then
+			if char_rom_addr < x"FFF" then
+				char_rom_data <= ufm_data;
+				if read_valid = '1' then
+					char_rom_addr <= char_rom_addr + 1;
 				end if;
+				char_rom_we <= '1';
+			else
+				char_rom_we <= '0';
 			end if;
+		end if;
 	end process;
 		
 	-- Read Char ROM address if still initialising the SAA5050 ROM, otherwise read Plus 1 ROMs
-	ufm_addr <= ( page(1 downto 0) & addr_in(13 downto 0) ) when char_rom_addr >= x"FFF" else ( "0000" & char_rom_addr );
+	ufm_addr <= ( page(1 downto 0) & addr_in(13 downto 0) ) when char_rom_addr >= x"FFF" else ( "0000" & char_rom_addr );				
 	PLS1ROM_data <= ufm_data;
 	
 	-- Ensure a high signal on the address bus of at least 25ns to register a valid signal and not a glitch caused by the keyboard

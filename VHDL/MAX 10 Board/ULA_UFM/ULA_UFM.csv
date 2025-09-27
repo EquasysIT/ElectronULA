@@ -1,12 +1,12 @@
-# system info ULA_UFM on 2023.06.11.21:36:46
+# system info ULA_UFM on 2025.09.27.15:10:26
 system_info:
 name,value
-DEVICE,10M08SAE144C8G
+DEVICE,10M08SCE144C8G
 DEVICE_FAMILY,MAX 10
-GENERATION_ID,1686515804
+GENERATION_ID,1758982225
 #
 #
-# Files generated for ULA_UFM on 2023.06.11.21:36:46
+# Files generated for ULA_UFM on 2025.09.27.15:10:26
 files:
 filepath,kind,attributes,module,is_top
 simulation/ULA_UFM.vhd,VHDL,,ULA_UFM,true

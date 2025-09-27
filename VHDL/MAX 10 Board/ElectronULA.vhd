@@ -146,7 +146,7 @@ signal cpu_clken_out     : std_logic;
 signal ula_enable        : std_logic;
 signal ula_data          : std_logic_vector(7 downto 0);
 signal ula_irq_n         : std_logic;
-signal phi2					 : std_logic;
+signal phi2		         : std_logic;
 
 -- Video signals
 signal video_red         : std_logic_vector(3 downto 0);
@@ -179,7 +179,7 @@ begin
 		c2		=> clock_40,
 		c3		=> clock_96
 	);
-
+	
     ula : entity work.ElectronULACore
 	 port map (
         clk_16M00 => clock_16,
@@ -193,7 +193,7 @@ begin
         data_out  => ula_data,
         data_en   => ula_enable,
         R_W_n     => RnWIN,
-        RST_n     => nRST,
+        RST_n		=> nRST,
         IRQ_n     => ula_irq_n,
         NMI_n     => nNMI,
 		  
@@ -250,21 +250,21 @@ begin
     csync <= video_hsync and video_vsync;
 	 nhs   <= video_hsync;
     caps  <= not caps_led;
-	     
+    
     -- nIRQOUT controls the enable signal of an open collector buffer which pulls IRQ low
     nIRQOUT <= ula_irq_n;
 	 
 	 -- CPU Write
     data_in <= data;
 
-	 -- Create phi2 signal from cpu_clk i.e. delayed by 31ns
+	-- Create phi2 signal from cpu_clk i.e. delayed by 31ns
 	 process(clock_16)
 	 begin
 		if falling_edge(clock_16) then
 			phi2 <= cpu_clk_out;
 		end if;
-	 end process;
-	 
+	 end process;													 
+
 	 -- Databus - Only drive data bus when phi2 is high
 	 -- CPU Read
 	 data <= ula_data when RnWIN = '1' and ula_enable = '1' and phi2 = '1' else "ZZZZZZZZ";
@@ -278,7 +278,7 @@ begin
 	 -- CPU Address Bus - Enable buffer and set direction to be driven from external CPU 
 	 A_OE <= '0';
 	 A_DIR <= '1';
-	  
+	 
 	 -- CPU Data Bus - Enable buffer when ULA is being accessed by the CPU and phi2 is high
 	 PD_OE <= '0' when ula_enable = '1' and phi2 = '1' else '1';
 
